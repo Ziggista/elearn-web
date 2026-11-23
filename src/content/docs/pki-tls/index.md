@@ -93,7 +93,7 @@ Hashes show up as **certificate thumbprints** (the long hex string IIS and Windo
 
 ### 2.1 The trust problem
 
-Public-key crypto lets a browser talk privately to a server. But how does the browser know the public key it received **really belongs to** `intranet.rrc.qld.gov.au` and not to an attacker sitting in the middle?
+Public-key crypto lets a browser talk privately to a server. But how does the browser know the public key it received **really belongs to** `intranet.council.qld.gov.au` and not to an attacker sitting in the middle?
 
 It needs someone trustworthy to vouch: "this public key belongs to this name." That vouching is a **certificate**, and the system of who vouches for whom is **PKI** (Public Key Infrastructure).
 
@@ -106,8 +106,8 @@ A certificate is basically an **ID card for a public key**, signed by an authori
 
 | Field | What it means | Example |
 |---|---|---|
-| **Subject** | Who the cert was issued to | `CN=app.rrc.qld.gov.au` |
-| **Subject Alternative Names (SAN)** | **The names it's actually valid for.** Browsers only check this list. | `app.rrc.qld.gov.au`, `app01.corp.local` |
+| **Subject** | Who the cert was issued to | `CN=app.council.qld.gov.au` |
+| **Subject Alternative Names (SAN)** | **The names it's actually valid for.** Browsers only check this list. | `app.council.qld.gov.au`, `app01.corp.local` |
 | **Issuer** | Which CA signed it | `CN=[Issuing CA name]` |
 | **Valid from / to** | The dates it's good for | `2026-03-01` to `2026-09-17` |
 | **Public key** | The server's public key | RSA 2048 / ECDSA P-256 |
@@ -152,7 +152,7 @@ The single most common server-side mistake is **not sending the intermediate**. 
 | Examples | DigiCert, Sectigo, Let's Encrypt | [Our internal CA name, e.g. Active Directory Certificate Services] |
 | Trusted by | Every browser and device in the world | Only machines we've told to trust it (domain-joined PCs via Group Policy) |
 | Use for | Anything the public, phones, vendors or SaaS reach | Internal-only services: `*.corp.local`, server-to-server, SQL, LDAPS |
-| Names it can cover | Only real public domains we own, like `rrc.qld.gov.au` | Any name, including `corp.local` |
+| Names it can cover | Only real public domains we own, like `council.qld.gov.au` | Any name, including `corp.local` |
 | Cost / speed | Paid or ACME-automated | Free, but we run and protect it |
 
 Rule of thumb: **if anything outside our domain-joined fleet needs to trust it, it needs a public cert.** A public CA will never issue a cert for `server.corp.local`.
@@ -193,7 +193,7 @@ TLS isn't just for websites. It's underneath:
 
 Simplified, for TLS 1.3:
 
-1. **Client → Server: "Hello."** The client says which TLS versions and ciphers it supports and which name it wants (SNI, e.g. `app.rrc.qld.gov.au`).
+1. **Client → Server: "Hello."** The client says which TLS versions and ciphers it supports and which name it wants (SNI, e.g. `app.council.qld.gov.au`).
 2. **Server → Client: "Hello, here's my certificate."** The server picks the settings, sends its certificate plus the intermediate, and proves it holds the matching private key by signing part of the handshake.
 3. **Client checks the certificate.** Name, dates, chain, revocation. (See 3.3.) If anything fails, it stops here with an error.
 4. **Both sides agree a shared session key.** They use a key-exchange method (ECDHE) so that the session key is never sent over the wire at all.
@@ -342,7 +342,7 @@ Get-WebBinding -Protocol https | Select-Object bindingInformation, certificateHa
 **Any machine with OpenSSL, see what a server actually presents:**
 
 ```bash
-openssl s_client -connect app.rrc.qld.gov.au:443 -servername app.rrc.qld.gov.au -showcerts </dev/null
+openssl s_client -connect app.council.qld.gov.au:443 -servername app.council.qld.gov.au -showcerts </dev/null
 ```
 
 Look for: the names (SAN), the dates, and whether the intermediate is sent (more than one cert in the output).

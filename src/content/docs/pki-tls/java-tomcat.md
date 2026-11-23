@@ -49,12 +49,12 @@ Generate the key **inside a new keystore on the server itself**, so the private 
 
 ```bash
 keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 \
-  -dname "CN=app.rrc.qld.gov.au, O=Rockhampton Regional Council, C=AU" \
-  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.corp.local" \
+  -dname "CN=app.council.qld.gov.au, O=Example Council, C=AU" \
+  -ext "SAN=dns:app.council.qld.gov.au,dns:app01.corp.local" \
   -keystore conf/app-2026.p12 -storetype PKCS12
 
 keytool -certreq -alias tomcat -keystore conf/app-2026.p12 \
-  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.corp.local" \
+  -ext "SAN=dns:app.council.qld.gov.au,dns:app01.corp.local" \
   -file app-2026.csr
 ```
 
@@ -67,7 +67,7 @@ keytool -certreq -alias tomcat -keystore conf/app-2026.p12 \
 When the CA sends back the certificate, import the CA certificate first, then your certificate **using the same alias as the key**:
 
 ```bash
-keytool -importcert -trustcacerts -alias rrc-root -file rrc-root-ca.cer \
+keytool -importcert -trustcacerts -alias corp-root -file root-ca.cer \
   -keystore conf/app-2026.p12 -storetype PKCS12
 
 keytool -importcert -alias tomcat -file app-2026.cer \
@@ -81,7 +81,7 @@ You should see `Certificate reply was installed in keystore`. If you see `Failed
 So the app can call internal HTTPS, LDAPS or SQL services:
 
 ```bash
-keytool -importcert -cacerts -alias rrc-root -file rrc-root-ca.cer
+keytool -importcert -cacerts -alias corp-root -file root-ca.cer
 ```
 
 `-cacerts` (Java 9+) targets the JVM's own `cacerts`. The default password is `changeit`, which is fine for a truststore since it holds nothing secret.
@@ -127,7 +127,7 @@ Tomcat's HTTPS settings live in `conf/server.xml`:
 5. **Point `server.xml` at the new keystore.** Keep the old file for rollback.
 6. **Restart Tomcat** in a change window, and test from **another machine**:
    ```bash
-   openssl s_client -connect app.rrc.qld.gov.au:8443 -servername app.rrc.qld.gov.au </dev/null
+   openssl s_client -connect app.council.qld.gov.au:8443 -servername app.council.qld.gov.au </dev/null
    ```
    Look for the new expiry date and both certificates in the chain.
 7. **Clean up:** once it's confirmed working, delete the old keystore and any CSR or temp files. Update the certificate record (owner, expiry, location) in the CMDB.

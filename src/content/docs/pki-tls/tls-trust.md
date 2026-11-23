@@ -28,7 +28,7 @@ By the end of this session you should be able to explain, at arm's length, how P
 
 | Who | Role | In real life |
 |---|---|---|
-| **Seb** 🖥️ | The **server** | `app.rrc.qld.gov.au` running on IIS |
+| **Seb** 🖥️ | The **server** | `app.council.qld.gov.au` running on IIS |
 | **Clint** 🧑‍💻 | The **client** | A browser, an app, or another server calling Seb |
 | **Cash** 🏛️ | The **Certificate Authority (CA)** | DigiCert, Let's Encrypt, or our internal CA |
 | **Eve** 👂 | An **eavesdropper** | Anyone who can see the network traffic: shared Wi-Fi, a compromised switch, a tap |
@@ -73,9 +73,9 @@ Clint has never met Seb. Clint needs someone **already trusted** to vouch for Se
 
 Cash is like a passport office.
 
-1. **Seb applies.** Seb generates a key pair, keeps the private key, and sends Cash a request (a CSR) containing the public key and the name Seb wants: `app.rrc.qld.gov.au`.
+1. **Seb applies.** Seb generates a key pair, keeps the private key, and sends Cash a request (a CSR) containing the public key and the name Seb wants: `app.council.qld.gov.au`.
 2. **Cash checks.** Cash makes Seb prove control of that name, for example by putting a specific value in DNS or on the website. Hank can't do this for a domain Hank doesn't control.
-3. **Cash signs.** Cash issues a **certificate**: "The public key *X* belongs to `app.rrc.qld.gov.au`, valid until *date*." Cash signs it with **Cash's own** private key.
+3. **Cash signs.** Cash issues a **certificate**: "The public key *X* belongs to `app.council.qld.gov.au`, valid until *date*." Cash signs it with **Cash's own** private key.
 
 Now Seb has an ID card for that public key, stamped by Cash.
 
@@ -109,7 +109,7 @@ This is the TLS handshake, simplified (TLS 1.3).
 
 ### 1. Clint says hello
 
-> **Clint → Seb:** "Hi, I'd like to talk to `app.rrc.qld.gov.au`. I speak TLS 1.3 and 1.2, and here are the encryption methods I support. Here's my half of a key exchange."
+> **Clint → Seb:** "Hi, I'd like to talk to `app.council.qld.gov.au`. I speak TLS 1.3 and 1.2, and here are the encryption methods I support. Here's my half of a key exchange."
 
 The name Clint asks for (SNI) lets Seb pick the right certificate if Seb hosts several sites.
 
@@ -131,12 +131,12 @@ Clint runs four checks:
 
 | Check | Clint asks | If it fails |
 |---|---|---|
-| **Name** | Is `app.rrc.qld.gov.au` in the certificate's SAN list? | Stop: maybe this is the wrong server |
+| **Name** | Is `app.council.qld.gov.au` in the certificate's SAN list? | Stop: maybe this is the wrong server |
 | **Dates** | Is today inside the certificate's validity period? | Stop: expired or not yet valid |
 | **Chain** | Does the signature chain lead up to a root in my trust store? | Stop: Cash didn't vouch for this |
 | **Revocation** | Has Cash cancelled this certificate? | Stop: the key may have been stolen |
 
-Then Clint checks Seb's signature using the public key in the certificate. If it's valid, **Clint now knows it's talking to whoever holds Seb's private key**, and Cash vouched that this is `app.rrc.qld.gov.au`.
+Then Clint checks Seb's signature using the public key in the certificate. If it's valid, **Clint now knows it's talking to whoever holds Seb's private key**, and Cash vouched that this is `app.council.qld.gov.au`.
 
 ### 4. They agree a secret without ever sending it
 

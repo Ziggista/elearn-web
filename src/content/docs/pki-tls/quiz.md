@@ -8,7 +8,7 @@ Ten questions to run at the end of the session or send afterwards. Answers are a
 
 1. You receive a file called `webapp.pfx`. Is it safe to attach to a ticket? Why or why not?
 2. Which key does a CA use to sign a certificate: its public key or its private key?
-3. A certificate's CN is `app.rrc.qld.gov.au`, but its SAN list only contains `www.rrc.qld.gov.au`. Will a browser accept it for `app.rrc.qld.gov.au`?
+3. A certificate's CN is `app.council.qld.gov.au`, but its SAN list only contains `www.council.qld.gov.au`. Will a browser accept it for `app.council.qld.gov.au`?
 4. Name the four things every client checks about a server certificate.
 5. A site works fine in Chrome, but a PHP app calling the same URL gets `unable to get local issuer certificate`. What's the most likely cause?
 6. Can a public CA such as DigiCert issue a certificate for `sql01.corp.local`?

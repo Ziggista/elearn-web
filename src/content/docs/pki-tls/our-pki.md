@@ -1,11 +1,11 @@
 ---
-title: "Our PKI at RRC: getting and installing certificates"
-description: How RRC's internal CA works, how to request a SAN certificate, and how to install it on IIS, SQL Server and RDP.
+title: "Our PKI: getting and installing certificates"
+description: How our internal CA works, how to request a SAN certificate, and how to install it on IIS, SQL Server and RDP.
 ---
 
 **Slides for this page** are in the [Seb, Clint and the padlock](/present/tls-trust/) deck. Slide numbers are shown under each section.
 
-There are around **50 to 100 internal certificates** at RRC. If you run servers, you **will** be asked to request, install or renew one. This page is the how-to.
+There are around **50 to 100 internal certificates** here. If you run servers, you **will** be asked to request, install or renew one. This page is the how-to.
 
 ## How our PKI works
 
@@ -55,7 +55,7 @@ The private key should be **created on the server that will use it** and should 
 
 List every name people and systems use to reach the service. All of them go in the **Subject Alternative Name (SAN)**:
 
-- The friendly name: `app.rrc.qld.gov.au` or `app.corp.local`
+- The friendly name: `app.council.qld.gov.au` or `app.corp.local`
 - The server's own FQDN if anything uses it: `app01.corp.local`
 - **Not** short names like `app01` or IP addresses unless there's a real need
 
@@ -70,7 +70,7 @@ List every name people and systems use to reach the service. All of them go in t
 2. *Personal → Certificates* → right-click → *All Tasks → Advanced Operations → Create Custom Request*.
 3. *Proceed without enrollment policy* → *(No template) CNG key* → *PKCS #10*.
 4. *Details → Properties*:
-   - **Subject** tab: Subject name *Common name* = `app.rrc.qld.gov.au`. Alternative name *DNS* = add **each** name.
+   - **Subject** tab: Subject name *Common name* = `app.council.qld.gov.au`. Alternative name *DNS* = add **each** name.
    - **Extensions** tab: Extended Key Usage = *Server Authentication*.
    - **Private Key** tab: key size **2048** (or more), and make sure *Make private key exportable* is **unticked**.
 5. Save the `.req` file.
@@ -81,7 +81,7 @@ Save as `app.inf`:
 
 ```ini
 [NewRequest]
-Subject = "CN=app.rrc.qld.gov.au, O=Rockhampton Regional Council, C=AU"
+Subject = "CN=app.council.qld.gov.au, O=Example Council, C=AU"
 KeySpec = 1
 KeyLength = 2048
 Exportable = FALSE
@@ -96,7 +96,7 @@ OID = 1.3.6.1.5.5.7.3.1
 
 [Extensions]
 2.5.29.17 = "{text}"
-_continue_ = "dns=app.rrc.qld.gov.au&"
+_continue_ = "dns=app.council.qld.gov.au&"
 _continue_ = "dns=app01.corp.local"
 ```
 
@@ -146,7 +146,7 @@ Set-CimInstance -InputObject $ts -Property @{ SSLCertificateSHA1Hash = $thumb }
 
 ### 6. Test and record
 
-- Browse to every name in the SAN from **another machine**, or run `openssl s_client -connect app.rrc.qld.gov.au:443 -servername app.rrc.qld.gov.au`.
+- Browse to every name in the SAN from **another machine**, or run `openssl s_client -connect app.council.qld.gov.au:443 -servername app.council.qld.gov.au`.
 - For SQL, connect with **`Encrypt=True` and without `TrustServerCertificate`**. If it works, the cert is right.
 - Record the certificate (service, server, owner, expiry, thumbprint) in the CMDB, and set a reminder well before it expires.
 
@@ -163,7 +163,7 @@ For Tomcat and other Java apps, follow [Java keystores and Tomcat](/pki-tls/java
 
 | If the service is used by… | Use |
 |---|---|
-| Only domain-joined RRC PCs and servers | **Internal** cert from our CA |
+| Only domain-joined PCs and servers | **Internal** cert from our CA |
 | Anyone outside the domain: the public, phones, vendors, SaaS, non-domain devices | **Public** cert from a public CA |
 
 Our internal CA can't give you a certificate the outside world trusts, and a public CA can't issue for `.local` names.

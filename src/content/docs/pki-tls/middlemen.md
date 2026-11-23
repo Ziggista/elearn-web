@@ -18,11 +18,11 @@ If you haven't met Seb (server), Clint (client) and Hank (attacker) yet, read [T
 |---|---|
 | **Rogue Wi-Fi** | A hotspot named like the café's or the council's guest network |
 | **ARP spoofing** | A compromised PC on the same VLAN tells everyone "I'm the gateway" |
-| **DNS poisoning** | `app.rrc.qld.gov.au` is made to resolve to Hank's IP |
+| **DNS poisoning** | `app.council.qld.gov.au` is made to resolve to Hank's IP |
 | **Compromised device** | A hacked router, switch, proxy or hypervisor host |
 | **Malicious proxy settings** | Malware sets the PC's proxy to Hank's server |
 
-In every case, Hank can see and forward the traffic. What Hank **can't** do is present a certificate for `app.rrc.qld.gov.au` that Clint trusts, because Hank doesn't have Seb's private key and no CA will issue one to Hank. So Clint's browser shows a warning.
+In every case, Hank can see and forward the traffic. What Hank **can't** do is present a certificate for `app.council.qld.gov.au` that Clint trusts, because Hank doesn't have Seb's private key and no CA will issue one to Hank. So Clint's browser shows a warning.
 
 **That warning is the only thing standing between the user and Hank.**
 

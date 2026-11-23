@@ -226,7 +226,7 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <p class="eyebrow">The cast</p>
   <h2>Meet everyone</h2>
   <div class="cast">
-    <div class="card hl"><div class="emoji">🖥️</div><h3>Seb</h3><p><b>The server.</b> app.rrc.qld.gov.au on IIS.</p></div>
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Seb</h3><p><b>The server.</b> app.council.qld.gov.au on IIS.</p></div>
     <div class="card hl"><div class="emoji">🧑‍💻</div><h3>Clint</h3><p><b>The client.</b> A browser, an app, or another server.</p></div>
     <div class="card"><div class="emoji">🏛️</div><h3>Cash</h3><p><b>The Certificate Authority.</b> Vouches for people.</p></div>
     <div class="card"><div class="emoji">👂</div><h3>Eve</h3><p><b>Eavesdropper.</b> Can see the traffic.</p></div>
@@ -287,8 +287,8 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <h2>Cash the CA is a passport office</h2>
   <div class="steps light">
     <div class="step"><div class="num">1</div><div class="dir">Seb applies</div><p>Sends the public key and the name wanted (a CSR). Keeps the private key.</p></div>
-    <div class="step"><div class="num">2</div><div class="dir">Cash checks</div><p>Seb proves control of app.rrc.qld.gov.au (DNS record or web file). Hank can’t.</p></div>
-    <div class="step"><div class="num">3</div><div class="dir">Cash signs</div><p>“This public key belongs to app.rrc.qld.gov.au until 17 Sep.” Signed with <b>Cash’s</b> private key.</p></div>
+    <div class="step"><div class="num">2</div><div class="dir">Cash checks</div><p>Seb proves control of app.council.qld.gov.au (DNS record or web file). Hank can’t.</p></div>
+    <div class="step"><div class="num">3</div><div class="dir">Cash signs</div><p>“This public key belongs to app.council.qld.gov.au until 17 Sep.” Signed with <b>Cash’s</b> private key.</p></div>
   </div>
   <div class="callout"><span style="font-size:56px">🪪</span><p>That signed statement is Seb’s <b>certificate</b>: an ID card for Seb’s public key.</p></div>
   <aside class="notes">Our internal CA does the same job for corp.local names, except the "proof" is that the request comes from a domain-joined machine or an admin.</aside>
@@ -301,7 +301,7 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <div class="chain" style="margin-top:10px">
     <div class="card"><div class="emoji">🧑‍💻</div><h3>Clint trusts</h3><p>Cash’s root, already in the trust store</p></div>
     <div class="arrow">→</div>
-    <div class="card"><div class="emoji">🏛️</div><h3>Cash vouches</h3><p>Seb’s public key is app.rrc.qld.gov.au</p></div>
+    <div class="card"><div class="emoji">🏛️</div><h3>Cash vouches</h3><p>Seb’s public key is app.council.qld.gov.au</p></div>
     <div class="arrow">→</div>
     <div class="card hl"><div class="emoji">🖥️</div><h3>Seb proves</h3><p>Holds the matching private key</p></div>
   </div>
@@ -328,7 +328,7 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <h2>How Clint and Seb start talking securely</h2>
   <div class="seq">
     <div class="who"><span>🧑‍💻</span>Clint</div><div></div><div class="who"><span>🖥️</span>Seb</div>
-    <div class="lane"></div><div class="m r"><p><b>1 · Hello.</b> I want app.rrc.qld.gov.au, I speak TLS 1.3. Here’s my half of the key exchange.</p><div class="ln"></div></div><div class="lane"></div>
+    <div class="lane"></div><div class="m r"><p><b>1 · Hello.</b> I want app.council.qld.gov.au, I speak TLS 1.3. Here’s my half of the key exchange.</p><div class="ln"></div></div><div class="lane"></div>
     <div class="lane"></div><div class="m l"><p><b>2 · Hello.</b> My half of the key exchange, my certificate + intermediate, and a <b>signature</b> with my private key.</p><div class="ln"></div></div><div class="lane"></div>
     <div class="lane"></div><div class="m c"><p><b>3 · Clint checks</b> name, dates, chain, revocation, and Seb’s signature. ✅</p></div><div class="lane"></div>
     <div class="lane"></div><div class="m c"><p><b>4 · Both compute</b> the same shared secret. It is never sent.</p></div><div class="lane"></div>
@@ -354,12 +354,12 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <p class="eyebrow">Step 3 · Clint checks</p>
   <h2>Four checks, any fail = stop</h2>
   <div class="grid4" style="margin-top:10px">
-    <div class="card"><div class="emoji">🏷️</div><h3>Name</h3><p>Is app.rrc.qld.gov.au in the SAN?</p></div>
+    <div class="card"><div class="emoji">🏷️</div><h3>Name</h3><p>Is app.council.qld.gov.au in the SAN?</p></div>
     <div class="card"><div class="emoji">📅</div><h3>Dates</h3><p>Is it valid today?</p></div>
     <div class="card hl"><div class="emoji">⛓️</div><h3>Chain</h3><p>Does it lead to Cash in my trust store?</p></div>
     <div class="card"><div class="emoji">🚫</div><h3>Revocation</h3><p>Has Cash cancelled it?</p></div>
   </div>
-  <p class="lead" style="font-size:34px">Then Clint verifies Seb’s signature with the public key from the cert. Pass = <b>“I’m talking to the holder of Seb’s private key, and Cash says that’s app.rrc.qld.gov.au.”</b></p>
+  <p class="lead" style="font-size:34px">Then Clint verifies Seb’s signature with the public key from the cert. Pass = <b>“I’m talking to the holder of Seb’s private key, and Cash says that’s app.council.qld.gov.au.”</b></p>
   <aside class="notes">Every certificate error your users see is one of these four failing. Clicking through a warning, curl -k or TrustServerCertificate=True skips them, which hands the connection to Hank.</aside>
 </section>
 

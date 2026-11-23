@@ -21,7 +21,7 @@ The session deck is [Seb, Clint and the padlock](/present/tls-trust/) (42 slides
 | 0:00–0:03 | 1–4 | Objectives and why it matters | Read the six objectives. Then the Advanced → Proceed warning: a real attack and a misconfigured server look identical. |
 | 0:03–0:13 | 5–17 | How trust works | The Seb and Clint story: postcard problem, Cash the CA, the handshake, four checks, paint mixing, Hank's tricks, middlemen. Don't rush slide 14 (four checks). |
 | 0:13–0:18 | 18–21 | What goes in Seb's ID | CN vs SAN, the internal server cert checklist, server vs client use (EKU). **Live demo:** open an internal site's cert and show the SAN and EKU. |
-| 0:18–0:30 | 22–35 | Seb in real life | Who plays who, requesting a SAN cert (certlm / certreq), AD CS, binding on IIS / SQL / RDP, Tomcat and keytool, where keys live, why not to export, ISM-0507. Use the RRC crib sheet here. |
+| 0:18–0:30 | 22–35 | Seb in real life | Who plays who, requesting a SAN cert (certlm / certreq), AD CS, binding on IIS / SQL / RDP, Tomcat and keytool, where keys live, why not to export, ISM-0507. Use the local crib sheet here. |
 | 0:30–0:38 | 36–40 | History and the long game | SSL to TLS 1.3, save now / decrypt later, Heartbleed, what's coming, what we do. |
 | 0:38–0:40 | 41–42 | Recap and questions | Go back to the objectives: can everyone explain each one? |
 
