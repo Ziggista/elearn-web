@@ -11,7 +11,7 @@ Ten questions to run at the end of the session or send afterwards. Answers are a
 3. A certificate's CN is `app.rrc.qld.gov.au`, but its SAN list only contains `www.rrc.qld.gov.au`. Will a browser accept it for `app.rrc.qld.gov.au`?
 4. Name the four things every client checks about a server certificate.
 5. A site works fine in Chrome, but a PHP app calling the same URL gets `unable to get local issuer certificate`. What's the most likely cause?
-6. Can a public CA such as DigiCert issue a certificate for `sql01.rrc.local`?
+6. Can a public CA such as DigiCert issue a certificate for `sql01.corp.local`?
 7. After a driver upgrade, an app can't connect to SQL Server: "The certificate chain was issued by an authority that is not trusted." A colleague suggests adding `TrustServerCertificate=True`. What's wrong with that, and what's the proper fix?
 8. During a TLS session, is the bulk of the data encrypted with public-key crypto or symmetric crypto?
 9. Which TLS versions should be enabled on a new server?

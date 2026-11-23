@@ -95,7 +95,7 @@ A certificate is basically an **ID card for a public key**, signed by an authori
 | Field | What it means | Example |
 |---|---|---|
 | **Subject** | Who the cert was issued to | `CN=app.rrc.qld.gov.au` |
-| **Subject Alternative Names (SAN)** | **The names it's actually valid for.** Browsers only check this list. | `app.rrc.qld.gov.au`, `app01.rrc.local` |
+| **Subject Alternative Names (SAN)** | **The names it's actually valid for.** Browsers only check this list. | `app.rrc.qld.gov.au`, `app01.corp.local` |
 | **Issuer** | Which CA signed it | `CN=[Issuing CA name]` |
 | **Valid from / to** | The dates it's good for | `2026-03-01` to `2026-09-17` |
 | **Public key** | The server's public key | RSA 2048 / ECDSA P-256 |
@@ -133,11 +133,11 @@ The single most common server-side mistake is **not sending the intermediate**. 
 |---|---|---|
 | Examples | DigiCert, Sectigo, Let's Encrypt | [Our internal CA name, e.g. Active Directory Certificate Services] |
 | Trusted by | Every browser and device in the world | Only machines we've told to trust it (domain-joined PCs via Group Policy) |
-| Use for | Anything the public, phones, vendors or SaaS reach | Internal-only services: `*.rrc.local`, server-to-server, SQL, LDAPS |
-| Names it can cover | Only real public domains we own, like `rrc.qld.gov.au` | Any name, including `rrc.local` |
+| Use for | Anything the public, phones, vendors or SaaS reach | Internal-only services: `*.corp.local`, server-to-server, SQL, LDAPS |
+| Names it can cover | Only real public domains we own, like `rrc.qld.gov.au` | Any name, including `corp.local` |
 | Cost / speed | Paid or ACME-automated | Free, but we run and protect it |
 
-Rule of thumb: **if anything outside our domain-joined fleet needs to trust it, it needs a public cert.** A public CA will never issue a cert for `server.rrc.local`.
+Rule of thumb: **if anything outside our domain-joined fleet needs to trust it, it needs a public cert.** A public CA will never issue a cert for `server.corp.local`.
 
 > **Fill in:** how to request an internal cert and how to request a public cert here. [Link to request process / ticket category].
 

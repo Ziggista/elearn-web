@@ -9,6 +9,13 @@ export default defineConfig({
       description: 'Short IT training sessions.',
       sidebar: [
         {
+          label: 'Corp Apps session',
+          items: [
+            { label: 'Present: Certificates for Corp Apps', link: '/present/corp-apps-pki/', attrs: { target: '_blank' } },
+            { label: 'Our PKI: getting a certificate', slug: 'pki-tls/our-pki' },
+          ],
+        },
+        {
           label: 'PKI & TLS: start here',
           items: [
             { label: 'Training notes', slug: 'pki-tls' },

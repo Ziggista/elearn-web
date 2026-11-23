@@ -215,7 +215,7 @@ SHA-256("hello!") = <span class="k">ce06092fb948d9ffac7d1a376e404b26…</span></
   <h2>A certificate is an ID card for a public key</h2>
   <table>
     <tr><th style="width:30%">Field</th><th>Example</th></tr>
-    <tr><td><b>Subject Alternative Names</b></td><td><code>app.rrc.qld.gov.au</code>, <code>app01.rrc.local</code> ← the names it’s valid for</td></tr>
+    <tr><td><b>Subject Alternative Names</b></td><td><code>app.rrc.qld.gov.au</code>, <code>app01.corp.local</code> ← the names it’s valid for</td></tr>
     <tr><td><b>Issuer</b></td><td>The CA that signed it</td></tr>
     <tr><td><b>Valid from / to</b></td><td><code>2026-03-01</code> → <code>2026-09-17</code></td></tr>
     <tr><td><b>Public key</b></td><td>RSA 2048 / ECDSA P-256</td></tr>
@@ -269,7 +269,7 @@ SHA-256("hello!") = <span class="k">ce06092fb948d9ffac7d1a376e404b26…</span></
     <tr><th style="width:24%"></th><th style="width:38%">Public CA</th><th>Internal CA</th></tr>
     <tr><td><b>Examples</b></td><td>DigiCert, Sectigo, Let’s Encrypt</td><td>[Our internal CA]</td></tr>
     <tr><td><b>Trusted by</b></td><td>Every device in the world</td><td>Only our domain-joined machines</td></tr>
-    <tr><td><b>Names</b></td><td>Real public domains we own</td><td>Anything, incl. <code>rrc.local</code></td></tr>
+    <tr><td><b>Names</b></td><td>Real public domains we own</td><td>Anything, incl. <code>corp.local</code></td></tr>
     <tr><td><b>Use for</b></td><td>Public, phones, vendors, SaaS</td><td>Internal sites, server-to-server, SQL, LDAPS</td></tr>
   </table>
   <p class="lead" style="font-size:36px">If anything <b>outside our domain-joined fleet</b> must trust it, it needs a public cert.</p>

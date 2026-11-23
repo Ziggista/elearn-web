@@ -45,11 +45,11 @@ Generate the key **inside a new keystore on the server itself**, so the private 
 ```bash
 keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 \
   -dname "CN=app.rrc.qld.gov.au, O=Rockhampton Regional Council, C=AU" \
-  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.rrc.local" \
+  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.corp.local" \
   -keystore conf/app-2026.p12 -storetype PKCS12
 
 keytool -certreq -alias tomcat -keystore conf/app-2026.p12 \
-  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.rrc.local" \
+  -ext "SAN=dns:app.rrc.qld.gov.au,dns:app01.corp.local" \
   -file app-2026.csr
 ```
 
