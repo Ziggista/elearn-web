@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Locks, Keys and Certificates · Slides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{
+  --dark:#10203A; --dark2:#1B2F4E; --line:#2E4568;
+  --light:#F5F3EE; --paper:#FCFBF8; --ink:#14213D; --body:#46536A;
+  --amber:#F2A541; --teal:#17706C; --soft:#BFCBDC; --red:#C2410C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0A1528;overflow:hidden}
+body{font-family:'IBM Plex Sans',Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;width:1920px;height:1080px;left:50%;top:50%;transform-origin:center center}
+.slide{position:absolute;inset:0;padding:110px 128px;display:none;flex-direction:column;gap:36px;background:var(--light);overflow:hidden}
+.slide.on{display:flex;animation:in .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.slide.dark{background:var(--dark);color:var(--light)}
+.slide.amber{background:var(--amber);color:var(--ink)}
+.slide.center{justify-content:center}
+.notes{display:none}
+
+h1{font-family:'Space Grotesk',Arial,sans-serif;font-size:120px;line-height:1.02;font-weight:700}
+h2{font-family:'Space Grotesk',Arial,sans-serif;font-size:68px;line-height:1.08;font-weight:700}
+h3{font-family:'Space Grotesk',Arial,sans-serif;font-size:40px;line-height:1.15;font-weight:700}
+p,li,td,th{font-size:32px;line-height:1.4}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;font-weight:600;color:var(--teal)}
+.dark .eyebrow{color:var(--amber)}
+.lead{font-size:42px;line-height:1.3;color:var(--body);max-width:1400px}
+.dark .lead{color:var(--soft)}
+.muted{color:var(--body)} .dark .muted{color:var(--soft)}
+.big{font-family:'Space Grotesk',Arial,sans-serif;font-size:96px;font-weight:700;line-height:1.05}
+code,.mono{font-family:'JetBrains Mono',monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.card{background:var(--paper);border:2px solid #D9D4C7;border-radius:18px;padding:36px;display:flex;flex-direction:column;gap:14px}
+.dark .card{background:var(--dark2);border-color:var(--line)}
+.card .emoji{font-size:64px;line-height:1}
+.card p{color:var(--body);font-size:30px}
+.dark .card p{color:var(--soft)}
+.hl{border-color:var(--teal)!important} .dark .hl{border-color:var(--amber)!important}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-weight:600;border-bottom:3px solid var(--ink);padding:14px 18px;font-size:28px}
+td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-align:top}
+.dark th{border-color:var(--light)} .dark td{border-color:var(--line)}
+.code{font-family:'JetBrains Mono',monospace;font-size:26px;line-height:1.6;background:var(--dark);color:#E6EDF5;padding:30px 36px;border-radius:14px;white-space:pre}
+.dark .code{background:#0A1528}
+.k{color:var(--amber)}
+.pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:24px;padding:6px 16px;border-radius:8px;background:var(--dark);color:var(--amber);font-weight:600}
+
+/* chain diagram */
+.chain{display:flex;align-items:center;gap:28px}
+.chain .card{flex:1}
+.arrow{font-size:64px;color:var(--teal);font-weight:700}
+.dark .arrow{color:var(--amber)}
+
+/* steps */
+.steps{display:flex;flex-direction:column;gap:22px}
+.step{display:flex;align-items:center;gap:28px}
+.num{flex:none;width:60px;height:60px;border-radius:30px;background:var(--amber);color:var(--ink);font-family:'Space Grotesk';font-weight:700;font-size:30px;display:flex;align-items:center;justify-content:center}
+.dir{flex:none;width:340px;font-family:'JetBrains Mono',monospace;font-size:26px;color:var(--amber);font-weight:600}
+.step p{color:var(--soft)}
+
+/* memes */
+.meme-wrap{flex:1;display:flex;align-items:center;justify-content:center}
+.meme{font-family:'Anton',Impact,'Arial Black',sans-serif;text-transform:uppercase;color:#fff;
+  -webkit-text-stroke:3px #000;paint-order:stroke fill;text-shadow:0 4px 0 #000;letter-spacing:1px;text-align:center}
+.meme-tag{position:absolute;right:128px;top:110px}
+.mpanel{background:#222;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px;position:relative}
+.drake{display:grid;grid-template-columns:420px 1fr;width:1500px;border:6px solid #111;border-radius:12px;overflow:hidden}
+.drake .face{font-size:180px;display:flex;align-items:center;justify-content:center;background:#F7D774;height:330px}
+.drake .face.no{background:#F2B27A}
+.drake .txt{background:#fff;display:flex;align-items:center;padding:40px 56px;font-size:48px;font-family:'Space Grotesk';font-weight:700;color:#111;height:330px}
+.drake .txt code{font-size:44px;color:var(--red)}
+.brain{display:grid;grid-template-columns:1fr 300px;width:1500px;border:6px solid #111;border-radius:12px;overflow:hidden}
+.brain > div{height:175px;display:flex;align-items:center;border-bottom:4px solid #111}
+.brain .bt{background:#fff;padding:0 40px;font-family:'Space Grotesk';font-weight:700;font-size:38px;color:#111}
+.brain .bi{justify-content:center;font-size:110px}
+.brain .b1{background:#d9d9d9}.brain .b2{background:#9ec5ff}.brain .b3{background:#5a8dff}.brain .b4{background:radial-gradient(circle,#fff6a8,#ff9d2e 60%,#7a2bff)}
+.buttons{display:flex;gap:60px}
+.btn{width:520px;padding:50px 30px;border-radius:24px;background:#E24B4B;color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:40px;text-align:center;box-shadow:0 14px 0 #8E1F1F;border:5px solid #111}
+.sweat{font-size:200px;text-align:center;line-height:1}
+.fine{width:1500px;height:560px;background:linear-gradient(#ffb347,#ff7a18);border:6px solid #111;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:60px;position:relative}
+.fine .e{font-size:200px}
+.fine .bubble{background:#fff;color:#111;font-family:'Space Grotesk';font-weight:700;font-size:64px;padding:30px 50px;border-radius:50px;border:5px solid #111}
+.sign{background:#fff;border:6px solid #111;border-radius:12px;padding:60px 80px;max-width:1500px;text-align:center}
+.sign .meme{-webkit-text-stroke:0;text-shadow:none;color:#111;font-size:88px;line-height:1.1}
+
+/* chrome */
+#bar{position:fixed;left:0;bottom:0;height:6px;background:var(--amber);transition:width .25s;z-index:5}
+#hud{position:fixed;right:18px;bottom:16px;font:600 14px 'JetBrains Mono',monospace;color:#7f8ea8;z-index:5;display:flex;gap:14px;align-items:center}
+#hud a,#hud button{color:#7f8ea8;background:none;border:1px solid #33435e;border-radius:6px;padding:4px 10px;font:inherit;cursor:pointer;text-decoration:none}
+#hud a:hover,#hud button:hover{color:#fff}
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;background:#0d1830ee;color:#e6edf5;font:18px/1.5 'IBM Plex Sans',sans-serif;padding:18px 28px 44px;display:none;z-index:4;border-top:2px solid var(--amber)}
+#notes.on{display:block}
+#help{position:fixed;left:18px;bottom:16px;font:13px 'JetBrains Mono',monospace;color:#56657f;z-index:5}
+@media print{
+  html,body{overflow:visible;height:auto;background:#fff}
+  #stage{position:static;transform:none!important;width:auto;height:auto}
+  .slide{display:flex!important;position:relative;width:1920px;height:1080px;page-break-after:always;animation:none}
+  #bar,#hud,#notes,#help{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 -->
+<section class="slide dark center">
+  <p class="eyebrow">Corp Apps training · 45 minutes</p>
+  <h1>Locks, keys and<br>certificates</h1>
+  <p class="lead">Public-key crypto, PKI and TLS for the people who run our web, app and SQL servers.</p>
+  <p class="muted" style="margin-top:30px;font-size:28px">Press <span class="pill">→</span> to advance · <span class="pill">N</span> for notes · <span class="pill">F</span> for fullscreen</p>
+  <aside class="notes">Welcome. No maths and no prior knowledge needed. By the end: what a certificate actually is, why apps reject them, and what to do (and not do) when one breaks on your server. The full written notes are on the Training page of this site, so nobody needs to take notes.</aside>
+</section>
+
+<!-- 2 meme -->
+<section class="slide amber">
+  <p class="eyebrow" style="color:var(--ink)">Monday, 8:02 AM</p>
+  <div class="meme-wrap">
+    <div class="fine">
+      <div class="e">🐶☕</div>
+      <div class="bubble">This is fine.</div>
+      <div class="e">🔥</div>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:36px;font-weight:600">The cert expired Saturday. Monitoring: none. Users: many.</p>
+  <aside class="notes">Ask the room: who has had a certificate expire on them? Most cert problems are predictable. Once you know four checks, you can fix most of them yourself.</aside>
+</section>
+
+<!-- 3 agenda -->
+<section class="slide">
+  <p class="eyebrow">Today</p>
+  <h2>Four parts, one goal: no more mystery cert errors</h2>
+  <div class="grid4" style="margin-top:20px">
+    <div class="card"><div class="emoji">🔑</div><h3>Crypto basics</h3><p>Shared keys, key pairs, signatures, hashes</p></div>
+    <div class="card"><div class="emoji">🪪</div><h3>Certificates</h3><p>What’s inside, chain of trust, public vs internal CAs</p></div>
+    <div class="card"><div class="emoji">🤝</div><h3>TLS</h3><p>What it gives you and what happens on connect</p></div>
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Our servers</h3><p>IIS, SQL, Java, PHP, errors and bad habits</p></div>
+  </div>
+  <aside class="notes">About 10 minutes each on the first three, 15 on our environment, then questions.</aside>
+</section>
+
+<!-- 4 symmetric -->
+<section class="slide">
+  <p class="eyebrow">Part 1 · Crypto basics</p>
+  <h2>Symmetric encryption: one shared key</h2>
+  <div class="grid2" style="margin-top:20px">
+    <div class="card"><div class="emoji">🔐</div><h3>Like a safe with a combination</h3><p>The same key locks and unlocks. Fast enough to encrypt everything: web pages, SQL queries, file transfers. (AES)</p></div>
+    <div class="card hl"><div class="emoji">📨</div><h3>The problem</h3><p>How do we agree on the combination? If I email it to you, anyone reading the email has it too.</p></div>
+  </div>
+  <aside class="notes">Symmetric crypto does almost all the real work, but it has a key-sharing problem. Public-key crypto is the fix, which is next.</aside>
+</section>
+
+<!-- 5 key pair -->
+<section class="slide">
+  <p class="eyebrow">Part 1 · Crypto basics</p>
+  <h2>A key pair: hand out padlocks, keep the key</h2>
+  <div class="grid2" style="margin-top:20px">
+    <div class="card"><div class="emoji">🔓</div><h3>Public key</h3><p>An open padlock. Give it to anyone. If it leaks, nothing bad happens.</p></div>
+    <div class="card hl"><div class="emoji">🗝️</div><h3>Private key</h3><p>The only key that opens that padlock. Never leaves the server. If it leaks, anyone can pretend to be you.</p></div>
+  </div>
+  <p class="big" style="font-size:56px;margin-top:10px">The private key is the crown jewel. 👑</p>
+  <aside class="notes">Algorithms you'll see: RSA (2048/3072-bit) and ECDSA (e.g. P-256). Both fine; no need for the maths. Everything else in this session depends on the private key staying private.</aside>
+</section>
+
+<!-- 6 two jobs -->
+<section class="slide">
+  <p class="eyebrow">Part 1 · Crypto basics</p>
+  <h2>A key pair does two jobs</h2>
+  <table style="margin-top:20px">
+    <tr><th style="width:18%">Job</th><th style="width:47%">How</th><th>Proves</th></tr>
+    <tr><td><b>Encrypt</b></td><td>Anyone locks with your <b>public</b> key. Only your <b>private</b> key unlocks.</td><td>Only you can read it</td></tr>
+    <tr><td><b>Sign</b></td><td>You sign with your <b>private</b> key. Anyone checks with your <b>public</b> key.</td><td>It came from you and wasn’t changed</td></tr>
+  </table>
+  <p class="lead" style="font-size:36px">Signing is a wax seal 🕯️ Anyone can check it. Only you can make it. <b>Certificates run on signing.</b></p>
+  <aside class="notes">Signing is the important one for the rest of today. A CA signing a cert is the CA saying "I checked, this key belongs to this name."</aside>
+</section>
+
+<!-- 7 meme one does not simply -->
+<section class="slide dark">
+  <div class="meme-wrap">
+    <div class="mpanel" style="width:1500px;height:740px;background:linear-gradient(#3b3b3b,#151515)">
+      <p class="meme" style="font-size:96px">One does not simply</p>
+      <div style="font-size:200px">🧙‍♂️</div>
+      <p class="meme" style="font-size:96px">email the .pfx</p>
+    </div>
+  </div>
+  <aside class="notes">A .pfx bundles the certificate with its private key. Emailing it is handing out the crown jewel. We come back to this in Part 4.</aside>
+</section>
+
+<!-- 8 hashes -->
+<section class="slide">
+  <p class="eyebrow">Part 1 · Crypto basics</p>
+  <h2>Hashes: a fingerprint for data</h2>
+  <div class="code" style="font-size:30px">SHA-256("hello")  = <span class="k">2cf24dba5fb0a30e26e83b2ac5b9e29e…</span>
+SHA-256("hello!") = <span class="k">ce06092fb948d9ffac7d1a376e404b26…</span></div>
+  <div class="grid3">
+    <div class="card"><h3>Same in, same out</h3><p>Every time, on every machine.</p></div>
+    <div class="card"><h3>Tiny change, totally different</h3><p>One character flips the whole hash.</p></div>
+    <div class="card"><h3>One way</h3><p>You can’t get the data back from it.</p></div>
+  </div>
+  <p class="muted">You’ve seen these as cert <b>thumbprints</b> in IIS. Avoid MD5 and SHA-1.</p>
+  <aside class="notes">Signatures sign the hash of the data, not the data itself. Thumbprints are hashes of the whole certificate.</aside>
+</section>
+
+<!-- 9 trust / cert -->
+<section class="slide">
+  <p class="eyebrow">Part 2 · Certificates</p>
+  <h2>A certificate is an ID card for a public key</h2>
+  <table>
+    <tr><th style="width:30%">Field</th><th>Example</th></tr>
+    <tr><td><b>Subject Alternative Names</b></td><td><code>app.rrc.qld.gov.au</code>, <code>app01.rrc.local</code> ← the names it’s valid for</td></tr>
+    <tr><td><b>Issuer</b></td><td>The CA that signed it</td></tr>
+    <tr><td><b>Valid from / to</b></td><td><code>2026-03-01</code> → <code>2026-09-17</code></td></tr>
+    <tr><td><b>Public key</b></td><td>RSA 2048 / ECDSA P-256</td></tr>
+    <tr><td><b>Signature</b></td><td>The issuer’s seal over all of the above</td></tr>
+  </table>
+  <p class="muted">Not in it: <b>the private key</b>. That lives separately on the server.</p>
+  <aside class="notes">How does a browser know a public key really belongs to app.rrc.qld.gov.au and not an attacker? Someone trusted vouches for it, the way a government vouches for a driver's licence. That vouching is the certificate.</aside>
+</section>
+
+<!-- 10 meme change my mind -->
+<section class="slide amber">
+  <div class="meme-wrap" style="flex-direction:column;gap:40px">
+    <div style="font-size:180px">🧑‍💻☕</div>
+    <div class="sign"><p class="meme">Browsers ignore the CN.<br>Only the SAN counts.</p><p style="font-family:'Space Grotesk';font-size:44px;margin-top:24px;color:#111">Change my mind.</p></div>
+  </div>
+  <aside class="notes">Someone always says "but the CN is right". Modern browsers stopped looking at the Common Name years ago. If the name isn't in the SAN list, it fails.</aside>
+</section>
+
+<!-- 11 chain -->
+<section class="slide dark">
+  <p class="eyebrow">Part 2 · Certificates</p>
+  <h2>The chain of trust</h2>
+  <div class="chain" style="margin-top:30px">
+    <div class="card"><div class="emoji">🏛️</div><h3>Root CA</h3><p>Self-signed. Offline. ~20 years. Pre-installed in your trust store.</p></div>
+    <div class="arrow">→</div>
+    <div class="card"><div class="emoji">🏢</div><h3>Intermediate CA</h3><p>Does the day-to-day signing.</p></div>
+    <div class="arrow">→</div>
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Your server cert</h3><p>On IIS, Apache, SQL…</p></div>
+  </div>
+  <p class="lead" style="font-size:36px">The server must send <b style="color:var(--amber)">its cert + the intermediate</b>. The client already has the root.</p>
+  <aside class="notes">The client follows signatures up the chain until it hits a root it trusts. Windows, browsers, Java and Linux each have their own trust store. Missing intermediate is the most common server-side mistake.</aside>
+</section>
+
+<!-- 12 meme works in chrome -->
+<section class="slide">
+  <div class="meme-wrap" style="flex-direction:column;gap:36px">
+    <div class="grid2" style="width:1500px">
+      <div class="mpanel" style="background:#E8F5E9;height:460px"><div style="font-size:150px">😎</div><p style="font-family:'Space Grotesk';font-weight:700;font-size:44px;color:#111;text-align:center">Chrome: “Missing intermediate? I’ll just go fetch it.”</p></div>
+      <div class="mpanel" style="background:#FDECEA;height:460px"><div style="font-size:150px">😭</div><p style="font-family:'Space Grotesk';font-weight:700;font-size:44px;color:#111;text-align:center">Java, PHP, curl: <code style="font-size:34px">PKIX path building failed</code></p></div>
+    </div>
+    <p class="big" style="font-size:60px">“It works in Chrome” proves nothing.</p>
+  </div>
+  <aside class="notes">Browsers paper over a missing intermediate by fetching it. Most other clients don't. Always serve the full chain.</aside>
+</section>
+
+<!-- 13 public vs internal -->
+<section class="slide">
+  <p class="eyebrow">Part 2 · Certificates</p>
+  <h2>Public CA or internal CA?</h2>
+  <table>
+    <tr><th style="width:24%"></th><th style="width:38%">Public CA</th><th>Internal CA</th></tr>
+    <tr><td><b>Examples</b></td><td>DigiCert, Sectigo, Let’s Encrypt</td><td>[Our internal CA]</td></tr>
+    <tr><td><b>Trusted by</b></td><td>Every device in the world</td><td>Only our domain-joined machines</td></tr>
+    <tr><td><b>Names</b></td><td>Real public domains we own</td><td>Anything, incl. <code>rrc.local</code></td></tr>
+    <tr><td><b>Use for</b></td><td>Public, phones, vendors, SaaS</td><td>Internal sites, server-to-server, SQL, LDAPS</td></tr>
+  </table>
+  <p class="lead" style="font-size:36px">If anything <b>outside our domain-joined fleet</b> must trust it, it needs a public cert.</p>
+  <aside class="notes">Phones, vendors, SaaS, Linux boxes and Java apps won't trust the internal CA unless told to. Mention how to request each kind of cert here.</aside>
+</section>
+
+<!-- 14 tls gives -->
+<section class="slide dark">
+  <p class="eyebrow">Part 3 · TLS</p>
+  <h2>TLS gives you three things</h2>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card"><div class="emoji">🙈</div><h3>Confidentiality</h3><p>Nobody in between can read it.</p></div>
+    <div class="card"><div class="emoji">🧾</div><h3>Integrity</h3><p>Nobody can change it unnoticed.</p></div>
+    <div class="card hl"><div class="emoji">🪪</div><h3>Authentication</h3><p>You’re talking to the real server.</p></div>
+  </div>
+  <p class="lead" style="font-size:34px">Under HTTPS, SQL Server, LDAPS, SMTP, RDP, WinRM, APIs and most SaaS integrations. “SSL” is just the old name.</p>
+  <aside class="notes">Authentication is the one people forget, and the one that "fixes" like TrustServerCertificate throw away.</aside>
+</section>
+
+<!-- 15 handshake -->
+<section class="slide dark">
+  <p class="eyebrow">Part 3 · TLS</p>
+  <h2>What happens when a client connects</h2>
+  <div class="steps" style="margin-top:10px">
+    <div class="step"><div class="num">1</div><div class="dir">Client → Server</div><p>“Hello. I speak TLS 1.3 / 1.2. I want <b>app.rrc.qld.gov.au</b>.”</p></div>
+    <div class="step"><div class="num">2</div><div class="dir">Server → Client</div><p>“Here’s my cert + intermediate, and proof I hold the private key.”</p></div>
+    <div class="step"><div class="num">3</div><div class="dir">Client</div><p>Checks name, dates, chain, revocation. Any fail = stop.</p></div>
+    <div class="step"><div class="num">4</div><div class="dir">Both</div><p>Agree a session key without ever sending it (ECDHE).</p></div>
+    <div class="step"><div class="num">5</div><div class="dir">Both</div><p>Everything else is fast symmetric encryption. 🔒</p></div>
+  </div>
+  <aside class="notes">Key insight: public-key crypto is only used at the start to prove identity and agree a key. Then symmetric crypto from Part 1 does the heavy lifting. Fresh key per session = forward secrecy.</aside>
+</section>
+
+<!-- 16 four checks -->
+<section class="slide">
+  <p class="eyebrow">Part 3 · TLS</p>
+  <h2>Every cert error is one of four checks</h2>
+  <div class="grid4" style="margin-top:20px">
+    <div class="card"><div class="emoji">🏷️</div><h3>Name</h3><p>Is the name I used in the SAN? Not by IP, short name or alias.</p></div>
+    <div class="card"><div class="emoji">📅</div><h3>Dates</h3><p>Not expired? Is the server clock right?</p></div>
+    <div class="card hl"><div class="emoji">⛓️</div><h3>Chain</h3><p>Leads to a root I trust? Intermediate sent?</p></div>
+    <div class="card"><div class="emoji">🚫</div><h3>Revocation</h3><p>Not cancelled? Can I reach the CRL/OCSP URL?</p></div>
+  </div>
+  <p class="big" style="font-size:56px">Work out which one failed. The fix is usually obvious.</p>
+  <aside class="notes">This is the slide to remember. It's 90% of diagnosis.</aside>
+</section>
+
+<!-- 17 meme two buttons -->
+<section class="slide amber">
+  <div class="meme-wrap" style="flex-direction:column;gap:50px">
+    <div class="buttons">
+      <div class="btn">Renew the cert now</div>
+      <div class="btn">Wait, it’s not due till Saturday</div>
+    </div>
+    <div class="sweat">😰</div>
+    <p style="font-family:'Space Grotesk';font-weight:700;font-size:44px">Every sysadmin, every renewal cycle</p>
+  </div>
+  <aside class="notes">Renew early, and know when every cert expires. With lifetimes shrinking (coming up), this choice comes round far more often.</aside>
+</section>
+
+<!-- 18 where -->
+<section class="slide">
+  <p class="eyebrow">Part 4 · Our servers</p>
+  <h2>Where you’ll meet certificates</h2>
+  <table>
+    <tr><th style="width:20%">Platform</th><th style="width:34%">Cert lives in</th><th>Watch out for</th></tr>
+    <tr><td><b>IIS</b></td><td><code>certlm.msc</code> → Personal; site Bindings</td><td>Key icon present; SNI if sites share an IP</td></tr>
+    <tr><td><b>SQL Server</b></td><td>Windows store, picked in SQL Config Manager</td><td>Service account needs key access; new drivers validate by default</td></tr>
+    <tr><td><b>Apache / nginx / PHP</b></td><td>PEM files: cert, chain, key</td><td>Use the full-chain file; lock down the key</td></tr>
+    <tr><td><b>Java</b></td><td>Keystores + its own <code>cacerts</code></td><td>Ignores the Windows trust store</td></tr>
+    <tr><td><b>Firewall / LB</b></td><td>Their own stores</td><td>TLS inspection re-signs outbound traffic [confirm]</td></tr>
+  </table>
+  <aside class="notes">If TLS inspection is on, outbound HTTPS from servers is re-signed with an internal CA. Windows apps cope; Java, Python and PHP often don't. Check that before blaming the vendor.</aside>
+</section>
+
+<!-- 19 formats -->
+<section class="slide dark">
+  <p class="eyebrow">Part 4 · Our servers</p>
+  <h2>File formats: one rule</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card"><h3>✅ Public, share freely</h3><p><code>.cer</code> <code>.crt</code> <code>.p7b</code> <code>.csr</code></p></div>
+    <div class="card hl"><h3>🛑 Contains a private key</h3><p><code>.pfx</code> <code>.p12</code> <code>.key</code> (and some <code>.pem</code>)</p></div>
+  </div>
+  <p class="big" style="font-size:64px;color:var(--amber)">If it has a private key in it, it’s a password.</p>
+  <p class="lead" style="font-size:34px">Don’t email it, share it, commit it or ticket it. Best of all: generate the CSR <b>on the server</b> so the key never travels.</p>
+  <aside class="notes">Send a pfx password by a different channel from the file. Check .pem files for "BEGIN PRIVATE KEY" before sharing.</aside>
+</section>
+
+<!-- 20 meme drake -->
+<section class="slide">
+  <div class="meme-wrap">
+    <div class="drake">
+      <div class="face no">🙅</div><div class="txt"><code>TrustServerCertificate=True</code></div>
+      <div class="face" style="font-size:140px">😏👉</div><div class="txt">Put a proper internal-CA cert on the SQL Server</div>
+    </div>
+  </div>
+  <aside class="notes">TrustServerCertificate keeps encryption but throws away authentication. It's locking your car and leaving the key in the door. Same goes for curl -k, PHP verify_peer false, Python verify=False and Java trust-all managers.</aside>
+</section>
+
+<!-- 21 errors -->
+<section class="slide">
+  <p class="eyebrow">Part 4 · Our servers</p>
+  <h2>Error decoder</h2>
+  <table>
+    <tr><th style="width:52%">You see</th><th>Usually means</th></tr>
+    <tr><td><code>ERR_CERT_DATE_INVALID</code></td><td>📅 Expired (or clock wrong)</td></tr>
+    <tr><td><code>ERR_CERT_COMMON_NAME_INVALID</code></td><td>🏷️ Name not in SAN</td></tr>
+    <tr><td><code>ERR_CERT_AUTHORITY_INVALID</code></td><td>⛓️ Self-signed / untrusted CA / no intermediate</td></tr>
+    <tr><td><code>unable to get local issuer certificate</code></td><td>⛓️ Missing intermediate or CA not in app’s bundle</td></tr>
+    <tr><td><code>PKIX path building failed</code> (Java)</td><td>⛓️ Same, import CA into <code>cacerts</code></td></tr>
+    <tr><td>SQL: <i>authority that is not trusted</i></td><td>⛓️ Self-signed SQL cert, new driver validates</td></tr>
+  </table>
+  <aside class="notes">Notice how most of these are the chain check. Ask the room which ones they've seen.</aside>
+</section>
+
+<!-- 22 lifetimes -->
+<section class="slide dark">
+  <p class="eyebrow">Part 5 · Lifecycle</p>
+  <h2>Public cert lifetimes are shrinking</h2>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card"><p class="muted">From 15 Mar 2026</p><p class="big" style="color:var(--light)">200</p><p>days max</p></div>
+    <div class="card"><p class="muted">From 15 Mar 2027</p><p class="big" style="color:var(--light)">100</p><p>days max</p></div>
+    <div class="card hl"><p class="muted">From 15 Mar 2029</p><p class="big" style="color:var(--amber)">47</p><p>days max</p></div>
+  </div>
+  <p class="lead" style="font-size:36px">Manual renewal stops being practical. We’re moving to <b style="color:var(--amber)">automated issuance (ACME)</b> and an accurate cert inventory.</p>
+  <aside class="notes">CA/Browser Forum rules. Internal CA certs aren't bound by these, but should still be tracked. Lifecycle: request, issue, install, monitor, renew.</aside>
+</section>
+
+<!-- 23 meme brain -->
+<section class="slide">
+  <div class="meme-wrap">
+    <div class="brain">
+      <div class="bt">Click through the browser warning</div><div class="bi b1">🧠</div>
+      <div class="bt"><span>Set <code>verify=False</code> and move on</span></div><div class="bi b2">🧠</div>
+      <div class="bt">Install the cert with the full chain</div><div class="bi b3">🧠</div>
+      <div class="bt" style="border-bottom:none">Automate renewal and never think about it again</div><div class="bi b4" style="border-bottom:none">🌌</div>
+    </div>
+  </div>
+  <aside class="notes">Aim for the bottom row.</aside>
+</section>
+
+<!-- 24 check yours -->
+<section class="slide">
+  <p class="eyebrow">Part 5 · Try it</p>
+  <h2>Check your own servers</h2>
+  <div class="code"><span class="k"># Certs expiring in the next 60 days</span>
+Get-ChildItem Cert:\LocalMachine\My |
+  Where-Object { $_.NotAfter -lt (Get-Date).AddDays(60) } |
+  Select-Object Subject, NotAfter, Thumbprint, HasPrivateKey
+
+<span class="k"># What does a server actually send?</span>
+openssl s_client -connect app.rrc.qld.gov.au:443 \
+  -servername app.rrc.qld.gov.au -showcerts &lt;/dev/null</div>
+  <p class="muted">Or click the padlock → Certificate → <b>Certification Path</b>.</p>
+  <aside class="notes">Demo the PowerShell live on a server you can show. Homework: run it on one server you own.</aside>
+</section>
+
+<!-- 25 recap -->
+<section class="slide dark">
+  <p class="eyebrow">Recap</p>
+  <h2>Five things to remember</h2>
+  <div class="steps" style="margin-top:10px">
+    <div class="step"><div class="num">1</div><p style="color:var(--light)">Public key is public. <b>Private key is a secret</b>, and so is any <code>.pfx</code> or <code>.key</code>.</p></div>
+    <div class="step"><div class="num">2</div><p style="color:var(--light)">A cert is an <b>ID card for a public key</b>, signed by a CA we trust.</p></div>
+    <div class="step"><div class="num">3</div><p style="color:var(--light)">TLS uses certs to <b>prove identity and agree a key</b>, then encrypts fast.</p></div>
+    <div class="step"><div class="num">4</div><p style="color:var(--light)">Every error is <b>name, date, chain or revocation</b>.</p></div>
+    <div class="step"><div class="num">5</div><p style="color:var(--light)"><b>Never fix a cert error by turning checking off.</b></p></div>
+  </div>
+  <aside class="notes">Read these out. Then point people at the Training page and the Quiz on this site.</aside>
+</section>
+
+<!-- 26 questions -->
+<section class="slide amber center">
+  <p class="big" style="font-size:140px">Questions?</p>
+  <p class="lead" style="color:var(--ink)">Notes and quiz: <b>elearn.ziggi.dev/pki-tls</b></p>
+  <p style="font-size:30px">Cert requests: [process] · TLS questions: [contact]</p>
+  <aside class="notes">Use the quiz if there's time, or send it out afterwards.</aside>
+</section>
+
+</div>
+<div id="bar"></div>
+<div id="notes"></div>
+<div id="help">← → space · N notes · F fullscreen</div>
+<div id="hud"><span id="count"></span><button id="nbtn" type="button">Notes</button><a href="/pki-tls/">Read notes page</a></div>
+<script>
+(function(){
+  const stage=document.getElementById('stage');
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('bar'),count=document.getElementById('count'),notes=document.getElementById('notes');
+  let i=0;
+  function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='translate(-50%,-50%) scale('+s+')';}
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    count.textContent=(i+1)+' / '+slides.length;
+    const a=slides[i].querySelector('.notes');notes.textContent=a?a.textContent:'';
+    if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
+  }
+  function toggleNotes(){notes.classList.toggle('on');}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home')show(0);
+    else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='n'||e.key==='N')toggleNotes();
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});}
+  });
+  document.getElementById('nbtn').addEventListener('click',toggleNotes);
+  stage.addEventListener('click',e=>{if(e.target.closest('a,button'))return;show(e.clientX<innerWidth/3?i-1:i+1);});
+  let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(d<0?i+1:i-1);tx=null;});
+  addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(n&&n-1!==i)show(n-1);});
+  fit();show((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>

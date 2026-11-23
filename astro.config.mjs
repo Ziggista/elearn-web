@@ -11,7 +11,8 @@ export default defineConfig({
         {
           label: 'PKI & TLS',
           items: [
-            { label: 'Training', slug: 'pki-tls' },
+            { label: 'Training notes', slug: 'pki-tls' },
+            { label: 'Slides (present)', link: '/present/pki-tls/', attrs: { target: '_blank' } },
             { label: 'Quiz', slug: 'pki-tls/quiz' },
             { label: 'Presenter guide', slug: 'pki-tls/presenter-guide' },
           ],
