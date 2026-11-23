@@ -12,6 +12,7 @@ export default defineConfig({
           label: 'Corp Apps session',
           items: [
             { label: 'Present: Seb, Clint and the padlock', link: '/present/tls-trust/', attrs: { target: '_blank' } },
+            { label: 'Download handout (PDF)', link: '/downloads/seb-clint-padlock-handout.pdf', attrs: { target: '_blank' } },
             { label: 'Session notes (Seb & Clint)', slug: 'pki-tls/tls-trust' },
             { label: 'Our PKI: getting a certificate', slug: 'pki-tls/our-pki' },
           ],

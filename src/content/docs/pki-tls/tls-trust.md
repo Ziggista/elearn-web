@@ -7,6 +7,8 @@ This page explains what TLS is, why we need it, and how trust works, using a sim
 
 **Slides for this topic:** [present the Seb and Clint deck](/present/tls-trust/). Slide numbers are shown under each section.
 
+**Handout:** [download the handout (PDF)](/downloads/seb-clint-padlock-handout.pdf). It has every slide with its talking points and space for notes.
+
 ## Learning objectives
 
 *📽️ Slide [2](/present/tls-trust/#2)*
