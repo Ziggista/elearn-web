@@ -3,9 +3,13 @@ title: "Java keystores, keytool and Tomcat"
 description: How Java stores certificates and keys, the keytool commands you actually need, and how to renew a Tomcat certificate safely.
 ---
 
+**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+
 Java does certificates its own way. It **doesn't use the Windows certificate store** by default, it keeps keys in **keystore files**, and it has its own list of trusted CAs. Most "it works in the browser but not in the app" problems on Java servers come from that.
 
 ## Two kinds of store
+
+*📽️ Slide [12](/present/corp-apps-pki/#12)*
 
 | | Keystore | Truststore |
 |---|---|---|
@@ -112,6 +116,8 @@ Tomcat's HTTPS settings live in `conf/server.xml`:
 
 ## Renewing a Tomcat certificate: the safe way
 
+*📽️ Slide [13](/present/corp-apps-pki/#13)*
+
 1. **Check what's there now:** `keytool -list -v` on the current keystore. Note the names (SAN), expiry and which file `server.xml` points to.
 2. **Make a new key and CSR in a new keystore** (`app-2026.p12`) using the commands above. Use a **new key** each renewal; don't reuse the old one.
 3. **Get it signed** by the CA (internal or public, depending on who connects).
@@ -125,6 +131,8 @@ Tomcat's HTTPS settings live in `conf/server.xml`:
 7. **Clean up:** once it's confirmed working, delete the old keystore and any CSR or temp files. Update the certificate record (owner, expiry, location) in the CMDB.
 
 ## Common Java errors
+
+*📽️ Slide [14](/present/corp-apps-pki/#14)*
 
 | Error | Usually means |
 |---|---|

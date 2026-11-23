@@ -5,9 +5,23 @@ description: What TLS is, why we need it, and how a client comes to trust a serv
 
 This page explains what TLS is, why we need it, and how trust works, using a simple story. If you want the bigger picture of keys, certificates and file formats, see the [training notes](/pki-tls/).
 
-**Slides for this topic:** [present the Sally and Chris deck](/present/tls-trust/)
+**Slides for this topic:** [present the Sally and Chris deck](/present/tls-trust/). Slide numbers are shown under each section.
+
+## Learning objectives
+
+*📽️ Slide [2](/present/tls-trust/#2)*
+
+By the end of this session you should be able to explain, at arm's length, how PKI works:
+
+1. **Why we need TLS:** the three things it gives, and why encryption alone isn't enough.
+2. **How trust works:** the client trusts the CA, the CA vouches for the server, and the server proves it holds the private key.
+3. **What happens on connect:** the handshake, the four checks, and a shared secret that's never sent.
+4. **Where it lives at work:** who plays Sally, Chris and Charlie on IIS, AD CS, Tomcat, SQL Server and RDP.
+5. **Why keys matter long-term:** save now, decrypt later, and what Heartbleed taught us.
 
 ## Meet the cast
+
+*📽️ Slide [3](/present/tls-trust/#3)*
 
 | Who | Role | In real life |
 |---|---|---|
@@ -18,6 +32,8 @@ This page explains what TLS is, why we need it, and how trust works, using a sim
 | **Mallory** 😈 | An **active attacker** | Someone who can intercept and change traffic, or pretend to be Sally |
 
 ## Why we need TLS: the postcard problem
+
+*📽️ Slides [4](/present/tls-trust/#4), [5](/present/tls-trust/#5)*
 
 Without TLS, every message Chris sends Sally is a **postcard**. Every router, switch, Wi-Fi access point and ISP along the way can read it.
 
@@ -37,6 +53,8 @@ Encryption alone isn't enough. If Chris sets up a perfectly encrypted connection
 
 ## The trust problem
 
+*📽️ Slide [6](/present/tls-trust/#6)*
+
 Sally has a key pair: a **public key** she can hand to anyone, and a **private key** that never leaves her server. Anything signed with her private key can be checked with her public key.
 
 So Chris just needs Sally's public key. But here's the catch: when a public key arrives over the network saying "I'm Sally", **how does Chris know it's really Sally's and not Mallory's?** Mallory can generate her own key pair and say "I'm Sally" too.
@@ -44,6 +62,8 @@ So Chris just needs Sally's public key. But here's the catch: when a public key 
 Chris has never met Sally. He needs someone **he already trusts** to vouch for her.
 
 ## Enter Charlie, the Certificate Authority
+
+*📽️ Slide [7](/present/tls-trust/#7)*
 
 Charlie is like a passport office.
 
@@ -54,6 +74,8 @@ Charlie is like a passport office.
 Now Sally has an ID card for her public key, stamped by Charlie.
 
 ## Why Chris trusts Charlie
+
+*📽️ Slides [8](/present/tls-trust/#8), [9](/present/tls-trust/#9)*
 
 Chris trusts Charlie because **Charlie's root certificate was already on Chris's computer before Chris ever met Sally.**
 
@@ -73,6 +95,8 @@ Break any link and Chris refuses to continue.
 
 ## The conversation: how Chris and Sally start talking securely
 
+*📽️ Slide [10](/present/tls-trust/#10)*
+
 This is the TLS handshake, simplified (TLS 1.3).
 
 ### 1. Chris says hello
@@ -83,11 +107,15 @@ The name Chris asks for (SNI) lets Sally pick the right certificate if she hosts
 
 ### 2. Sally shows her ID and proves it's hers
 
+*📽️ Slide [11](/present/tls-trust/#11)*
+
 > **Sally → Chris:** "Hi. Let's use TLS 1.3 with these settings. Here's my half of the key exchange. Here's my certificate, and the intermediate that links it to Charlie. And here's a signature over everything we've said so far, made with my private key."
 
 That last signature is crucial. Anyone can **copy** Sally's certificate (it's public). Only Sally can **sign** with the matching private key. If Mallory replays Sally's certificate, she can't produce the signature.
 
 ### 3. Chris checks everything
+
+*📽️ Slide [12](/present/tls-trust/#12)*
 
 Chris runs four checks:
 
@@ -101,6 +129,8 @@ Chris runs four checks:
 Then Chris checks Sally's signature using the public key in the certificate. If it's valid, **Chris now knows he's talking to whoever holds Sally's private key**, and Charlie vouched that this is `app.rrc.qld.gov.au`.
 
 ### 4. They agree a secret without ever sending it
+
+*📽️ Slide [13](/present/tls-trust/#13)*
 
 In steps 1 and 2, Chris and Sally each sent half of a **key exchange** (Elliptic-Curve Diffie-Hellman, ECDHE). The neat trick is that each side combines its own **secret** number with the other side's **public** half and they both arrive at the **same shared secret**, while Eve, who saw both public halves, can't work it out.
 
@@ -119,6 +149,8 @@ The private key and certificate were only needed for **step 2 and 3**: proving w
 
 ## What if Mallory tries something?
 
+*📽️ Slide [14](/present/tls-trust/#14)*
+
 | Mallory's move | What happens |
 |---|---|
 | Answers instead of Sally with **her own self-signed cert** | Chain check fails. Chris's browser shows a warning. |
@@ -129,13 +161,88 @@ The private key and certificate were only needed for **step 2 and 3**: proving w
 
 This is why **"just click through the warning"**, `curl -k`, `verify=False` and `TrustServerCertificate=True` are so dangerous: they skip exactly the checks that stop Mallory.
 
+## Sally in real life
+
+*📽️ Slide [15](/present/tls-trust/#15)*
+
+The story maps directly onto the systems we run.
+
+| Character | At work | Their "ID" lives in |
+|---|---|---|
+| **Sally** 🖥️ | An IIS site, SQL Server, a Tomcat app, an RDP host | The Windows certificate store, or a Java keystore |
+| **Chris** 🧑‍💻 | A browser, SSMS or an app's SQL driver, a Java app, `mstsc` | His trust store (Windows, or Java's `cacerts`) |
+| **Charlie** 🏛️ | Our internal CA (**AD CS**, managed in `certsrv.msc`), or a public CA | Charlie's root, pushed to domain PCs by Group Policy |
+| **Charlie's staff** | The PKI admins who approve and issue | |
+
+### Sally is an IIS site
+
+*📽️ Slide [16](/present/tls-trust/#16)*
+
+1. **Make a key and CSR on the IIS server**: `certlm.msc` → *Create Custom Request*, or `certreq -new app.inf app.req`. Key **not exportable**, every name in the SAN.
+2. **Send only the `.req`** to the PKI admins. The private key stays with Sally.
+3. **Charlie signs**: AD CS issues from a template (e.g. *Web Server*) and returns a `.cer`.
+4. **Sally pairs it**: `certreq -accept app.cer` on **the same server**. The key icon means ID and key are matched.
+5. **Sally shows her ID**: IIS → *Bindings* → *https* → pick the cert. Test from another machine.
+
+Step-by-step detail is on [Our PKI](/pki-tls/our-pki/).
+
+### Charlie is AD CS
+
+*📽️ Slide [17](/present/tls-trust/#17)*
+
+Inside Charlie's office (`certsrv.msc`) you'd see:
+
+- **Issued, Pending, Failed and Revoked** certificates.
+- **Templates**: the rules for each kind of ID, such as its purpose, key size, **whether the key can be exported**, and who may enrol.
+- **Revocation**: Charlie publishes a **CRL**, the list of IDs he's cancelled, which Chris checks.
+- **Charlie's own key** can sign an ID for **any** name, trusted by every domain PC. That's why only the PKI admins hold the pen.
+
+Some CAs also offer a web enrolment page at `/certsrv`. Requests still go through the PKI admins.
+
+### Sally is a Tomcat app
+
+*📽️ Slide [18](/present/tls-trust/#18)*
+
+Java keeps things in files:
+
+- **Keystore = Sally's wallet**: her private key, certificate and Charlie's cert (`conf/app.p12`, password in `server.xml`). **Secret.**
+- **Truststore = Chris's list of Charlies**: used when the Java app is the client (`cacerts`). Group Policy doesn't touch it, so our root has to be **added by hand**, and vendor Java upgrades can wipe it.
+
+The steps are the same as IIS with `keytool` instead of `certreq`: make the key in a new keystore, send the CSR, import Charlie's cert first, then Sally's under the same alias. See [Java keystores and Tomcat](/pki-tls/java-tomcat/).
+
+### Sally is SQL Server or an RDP host
+
+*📽️ Slide [19](/present/tls-trust/#19)*
+
+- **SQL Server**: Sally's ID is picked in SQL Server Configuration Manager, and the SQL service account needs Read on her key. `TrustServerCertificate=True` is Chris saying "I won't look at your ID".
+- **RDP**: by default Sally shows a **self-signed** ID. The "identity of the remote computer cannot be verified" prompt is Chris being asked to trust a stranger. A cert from Charlie makes it go away.
+
+**If Chris skips the ID check, Mallory can be Sally.**
+
+### Where Sally keeps her private key
+
+*📽️ Slide [20](/present/tls-trust/#20)*
+
+| Sally is… | Private key lives in | Rule |
+|---|---|---|
+| IIS / RDP / LDAPS | Windows machine key store | Non-exportable |
+| SQL Server | Windows machine key store | Service account Read only |
+| Tomcat | Keystore file + password | Lock down the file and `server.xml` |
+| Charlie (AD CS) | The CA server | PKI admins only |
+
+New server? **Sally applies again.** Never copy her key (`.pfx`) somewhere new. More on [Private keys](/pki-tls/private-keys/).
+
 ## Save now, decrypt later
+
+*📽️ Slide [21](/present/tls-trust/#21)*
 
 Encryption protects data **today**. But an attacker doesn't have to break it today. They can **record encrypted traffic now** and **decrypt it later**, when they get something they didn't have before. This is called *harvest now, decrypt later* or *save now, decrypt later*.
 
 There are two ways "later" arrives.
 
 ### 1. The server's private key gets stolen: Heartbleed
+
+*📽️ Slide [22](/present/tls-trust/#22)*
 
 **Heartbleed** (CVE-2014-0160, April 2014) was a bug in **OpenSSL**, the TLS library used by Apache, nginx, countless appliances and embedded devices. A malformed "heartbeat" message made the server send back up to **64 KB of its own memory** per request, with no log entry. Attackers could repeat it as often as they liked.
 
@@ -157,6 +264,8 @@ Heartbleed's other lessons:
 
 ### 2. The maths gets broken: quantum computers
 
+*📽️ Slide [23](/present/tls-trust/#23)*
+
 The public-key algorithms behind today's key exchange and certificates (RSA, ECDH, ECDSA) are expected to be breakable by a large enough **quantum computer**. Nobody has one yet, but an adversary recording traffic today can wait.
 
 That makes it the same problem as Heartbleed, on a bigger scale: **anything recorded now with only today's key exchange could be readable later**, even with forward secrecy, because the key exchange itself is what gets broken.
@@ -169,6 +278,8 @@ The response is **post-quantum cryptography**:
 
 ### Why this matters to us
 
+*📽️ Slide [24](/present/tls-trust/#24)*
+
 Council data often stays sensitive for a long time: HR and payroll, ratepayer records, legal matters, CCTV, SCADA traffic. If someone could record it today and read it in 5 or 10 years, that's still a breach.
 
 What we can do now:
@@ -180,6 +291,8 @@ What we can do now:
 5. **Start asking vendors about post-quantum support** (hybrid ML-KEM) in their TLS stacks and roadmaps.
 
 ## Summary
+
+*📽️ Slide [25](/present/tls-trust/#25)*
 
 - TLS gives **confidentiality, integrity and authentication**. Without authentication, encryption is worthless.
 - Chris trusts Sally because **Chris already trusts Charlie**, Charlie **vouched for Sally's public key**, and Sally **proved she holds the private key**.

@@ -3,6 +3,8 @@ title: "Our PKI at RRC: getting and installing certificates"
 description: How RRC's internal CA works, how to request a SAN certificate, and how to install it on IIS, SQL Server and RDP.
 ---
 
+**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+
 There are around **50 to 100 internal certificates** at RRC. If you run servers, you **will** be asked to request, install or renew one. This page is the how-to.
 
 ## How our PKI works
@@ -16,6 +18,8 @@ There are around **50 to 100 internal certificates** at RRC. If you run servers,
 | **How machines trust it** | **Group Policy** pushes the root to domain-joined Windows machines. Some systems need it added **manually**. |
 
 ### Why the CA matters so much
+
+*📽️ Slide [7](/present/corp-apps-pki/#7)*
 
 Whoever controls an internal CA, or can enrol for any name through it, can create a trusted certificate for **any** internal site, and every domain-joined PC will believe it. (Remember [DigiNotar](/pki-tls/history/#certificate-authority-incidents).)
 
@@ -39,6 +43,8 @@ Get our root certificate (`.cer`) from the PKI admins. It's public, so it's safe
 
 ## Requesting a SAN certificate (IIS and other Windows services)
 
+*📽️ Slide [8](/present/corp-apps-pki/#8)*
+
 The private key should be **created on the server that will use it** and should **never leave it**. So you make the request on the server, and the PKI admins sign it.
 
 ### 1. Decide the names
@@ -50,6 +56,8 @@ List every name people and systems use to reach the service. All of them go in t
 - **Not** short names like `app01` or IP addresses unless there's a real need
 
 ### 2. Create the request on the server
+
+*📽️ Slide [9](/present/corp-apps-pki/#9)*
 
 **Option A: the GUI (`certlm.msc`)**
 
@@ -111,6 +119,8 @@ Or in `certlm.msc`, import the `.cer` into *Personal → Certificates*. Either w
 
 ### 5. Use it
 
+*📽️ Slides [10](/present/corp-apps-pki/#10), [11](/present/corp-apps-pki/#11)*
+
 | Service | How |
 |---|---|
 | **IIS** | IIS Manager → site → *Bindings* → *https* → pick the certificate. Tick *Require Server Name Indication* if several sites share the IP. |
@@ -141,6 +151,8 @@ Renewal is the same process: **new request on the server, new key, new cert**. T
 For Tomcat and other Java apps, follow [Java keystores and Tomcat](/pki-tls/java-tomcat/#renewing-a-tomcat-certificate-the-safe-way). The PKI admin side is identical.
 
 ## Internal or public certificate?
+
+*📽️ Slide [7](/present/corp-apps-pki/#7)*
 
 | If the service is used by… | Use |
 |---|---|

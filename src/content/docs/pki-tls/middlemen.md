@@ -3,11 +3,15 @@ title: "Middlemen: and why we never click Advanced > Proceed"
 description: Who can sit between a client and a server, the legitimate middlemen we run ourselves, and why certificate warnings must always mean something.
 ---
 
+**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+
 A **middleman** (man-in-the-middle, MITM) is anything that sits between the client and the server and can see or change the traffic. TLS exists to make middlemen harmless. Certificate checks are the part that does it.
 
 If you haven't met Sally (server), Chris (client) and Mallory (attacker) yet, read [TLS and trust](/pki-tls/tls-trust/) first.
 
 ## Malicious middlemen
+
+*📽️ Slide [6](/present/corp-apps-pki/#6)*
 
 | How Mallory gets in the middle | Example |
 |---|---|
@@ -22,6 +26,8 @@ In every case, Mallory can see and forward the traffic. What she **can't** do is
 **That warning is the only thing standing between the user and Mallory.**
 
 ## Why "Advanced > Proceed" is so bad
+
+*📽️ Slides [2](/present/corp-apps-pki/#2), [3](/present/corp-apps-pki/#3)*
 
 When a user clicks through a certificate warning, they're telling the browser: "I don't care who's on the other end."
 
@@ -52,6 +58,8 @@ That last one matters a lot for us. RDP uses TLS too, and by default each server
 Websites can send an **HSTS** header (`Strict-Transport-Security`) that tells browsers "only ever connect to me over valid HTTPS". Once a browser has seen it, it won't even offer the *Proceed* button for that site. It's worth enabling on internal web apps once their certificates are sorted.
 
 ## Legitimate middlemen we run ourselves
+
+*📽️ Slide [6](/present/corp-apps-pki/#6)*
 
 Some middlemen are deliberate. They work by **terminating TLS** (decrypting it) and starting a new TLS connection onward. That means they hold a private key and certificate the client trusts.
 

@@ -3,9 +3,13 @@ title: "Where private keys live, and why not to export them"
 description: Where private keys are stored on websites, SQL Server, RDP and Tomcat, how to protect them, and how this ties to ISM-0507.
 ---
 
+**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+
 Everything about a certificate's trust rests on one assumption: **only the server holds the private key.** If a copy exists anywhere else, whoever has that copy can be that server.
 
 ## ISM-0507
+
+*📽️ Slide [18](/present/corp-apps-pki/#18)*
 
 > **Control: ISM-0507; Revision: 5; Updated: Dec-22; Applicable: NC, OS, P, S, TS; Essential 8: N/A**
 >
@@ -14,6 +18,8 @@ Everything about a certificate's trust rests on one assumption: **only the serve
 In plain terms: we need to **know where our keys are, who can use them, how they're created, renewed and destroyed, and what we do if one leaks**. Every time a private key is exported and copied around, that becomes harder to answer. The practices on this page are how app admins help us meet it.
 
 ## Where private keys live
+
+*📽️ Slide [15](/present/corp-apps-pki/#15)*
 
 | Resource | Where the key is | Who needs access |
 |---|---|---|
@@ -37,6 +43,8 @@ When a key is created on Windows it's either **exportable** (can be saved out as
 - Non-exportable isn't perfect (an attacker with admin rights and the right tools can still extract keys from software storage), but it **stops accidental and casual copying**, which is the most common way keys spread.
 
 ## Why not to export keys
+
+*📽️ Slides [16](/present/corp-apps-pki/#16), [17](/present/corp-apps-pki/#17)*
 
 A `.pfx` file is the **certificate plus the private key**. Exporting one creates a copy of the server's identity that can travel anywhere.
 

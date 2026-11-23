@@ -3,6 +3,8 @@ title: Locks, Keys and Certificates
 description: PKI, TLS and public-key crypto for the people who run our servers.
 ---
 
+**Slides for this page:** [Locks, keys and certificates](/present/pki-tls/). Slide numbers are shown under each section.
+
 
 **PKI, TLS and public-key crypto for the people who run our servers**
 
@@ -11,6 +13,8 @@ Corp Apps training · about 45 minutes · no prior knowledge needed
 ---
 
 ## Why this matters to you
+
+*📽️ Slides [2](/present/pki-tls/#2), [3](/present/pki-tls/#3)*
 
 You run web servers, app servers and SQL boxes. Sooner or later one of these happens:
 
@@ -34,6 +38,8 @@ Every one of these is a TLS or certificate problem. Once you understand the hand
 
 ### 1.1 Symmetric encryption: one shared key
 
+*📽️ Slide [4](/present/pki-tls/#4)*
+
 The oldest kind of encryption uses **one key** to both lock and unlock. Think of a safe with a combination: anyone who knows the combination can open it and close it.
 
 - It's **fast**. Almost all real data (web pages, SQL queries, file transfers) is encrypted this way. AES is the common algorithm.
@@ -42,6 +48,8 @@ The oldest kind of encryption uses **one key** to both lock and unlock. Think of
 That key-sharing problem is what public-key crypto solves.
 
 ### 1.2 Public and private keys: a key pair
+
+*📽️ Slides [5](/present/pki-tls/#5), [7](/present/pki-tls/#7)*
 
 Public-key (asymmetric) crypto uses **two keys that are mathematically linked**:
 
@@ -59,6 +67,8 @@ The algorithms you'll see named are **RSA** (older, keys of 2048 or 3072 bits) a
 
 ### 1.3 The two jobs a key pair does
 
+*📽️ Slide [6](/present/pki-tls/#6)*
+
 | Job | Who uses which key | What it proves |
 |---|---|---|
 | **Encrypt** | Anyone encrypts with your *public* key. Only your *private* key decrypts. | Only you can read it. |
@@ -67,6 +77,8 @@ The algorithms you'll see named are **RSA** (older, keys of 2048 or 3072 bits) a
 Signing is the job that matters most for certificates. A signature is like a wax seal: anyone can look at it and confirm it's genuine, but only the holder of the seal can make one.
 
 ### 1.4 Hashes: a fingerprint of data
+
+*📽️ Slide [8](/present/pki-tls/#8)*
 
 A **hash** turns any amount of data into a short, fixed-length fingerprint (e.g. SHA-256 gives 64 hex characters).
 
@@ -92,6 +104,8 @@ A certificate is basically an **ID card for a public key**, signed by an authori
 
 ### 2.2 What's inside a certificate
 
+*📽️ Slides [9](/present/pki-tls/#9), [10](/present/pki-tls/#10)*
+
 | Field | What it means | Example |
 |---|---|---|
 | **Subject** | Who the cert was issued to | `CN=app.rrc.qld.gov.au` |
@@ -108,6 +122,8 @@ The certificate **does not contain the private key**. The private key sits separ
 > A common trap: the old **Common Name (CN)** field is ignored by modern browsers. If the name isn't in the **SAN** list, the cert fails, even if the CN is right.
 
 ### 2.3 The chain of trust
+
+*📽️ Slides [11](/present/pki-tls/#11), [12](/present/pki-tls/#12)*
 
 Certificates are signed by **Certificate Authorities (CAs)**, arranged in a chain:
 
@@ -129,6 +145,8 @@ The single most common server-side mistake is **not sending the intermediate**. 
 
 ### 2.4 Public CAs vs our internal CA
 
+*📽️ Slide [13](/present/pki-tls/#13)*
+
 | | Public CA | Internal CA |
 |---|---|---|
 | Examples | DigiCert, Sectigo, Let's Encrypt | [Our internal CA name, e.g. Active Directory Certificate Services] |
@@ -146,6 +164,8 @@ Rule of thumb: **if anything outside our domain-joined fleet needs to trust it, 
 ## Part 3: TLS
 
 ### 3.1 What TLS gives you
+
+*📽️ Slide [14](/present/pki-tls/#14)*
 
 **TLS (Transport Layer Security)** is the protocol that wraps a normal connection in encryption. "SSL" is its old name, and people still say "SSL certificate"; it means the same thing.
 
@@ -167,6 +187,8 @@ TLS isn't just for websites. It's underneath:
 
 ### 3.2 What happens when a client connects (the handshake)
 
+*📽️ Slide [15](/present/pki-tls/#15)*
+
 Simplified, for TLS 1.3:
 
 1. **Client → Server: "Hello."** The client says which TLS versions and ciphers it supports and which name it wants (SNI, e.g. `app.rrc.qld.gov.au`).
@@ -180,6 +202,8 @@ So public-key crypto is used **briefly, at the start**, to prove identity and ag
 Because each session gets a fresh key, recording traffic today and stealing the server's private key later still doesn't decrypt it. That's called **forward secrecy**.
 
 ### 3.3 What the client checks
+
+*📽️ Slides [16](/present/pki-tls/#16), [17](/present/pki-tls/#17)*
 
 Every client runs the same four checks. Each one failing gives a recognisable error:
 
@@ -211,6 +235,8 @@ Older apps (old .NET Framework, old Java, old PHP) sometimes can't do TLS 1.2+. 
 
 ### 4.1 Where you'll meet certificates
 
+*📽️ Slide [18](/present/pki-tls/#18)*
+
 | Platform | Where the cert lives | Things to know |
 |---|---|---|
 | **IIS** | Windows cert store: *Local Computer → Personal* (`certlm.msc`). Bound per site in *Bindings*. | Bind by hostname with SNI if several sites share an IP. The private key must be marked as present (key icon). |
@@ -223,6 +249,8 @@ Older apps (old .NET Framework, old Java, old PHP) sometimes can't do TLS 1.2+. 
 > **TLS inspection:** if our firewalls decrypt outbound traffic [confirm whether and where], then outbound HTTPS from a server is re-signed with an internal CA. Windows apps cope because they trust that CA. Java, Python and PHP apps calling external APIs often fail with chain errors. Check this before blaming the vendor.
 
 ### 4.2 Certificate file formats cheat sheet
+
+*📽️ Slide [19](/present/pki-tls/#19)*
 
 | Extension | What's in it | Private key? | Handle as |
 |---|---|---|---|
@@ -239,6 +267,8 @@ Generating the CSR **on the server that will use the cert** means the private ke
 
 ### 4.3 Common errors and what they usually mean
 
+*📽️ Slide [21](/present/pki-tls/#21)*
+
 | You see | Likely cause | Check |
 |---|---|---|
 | `NET::ERR_CERT_DATE_INVALID` | Expired (or server clock wrong) | Expiry date; renew |
@@ -251,6 +281,8 @@ Generating the CSR **on the server that will use the cert** means the private ke
 | `handshake failure` / `protocol version` | Client and server share no TLS version or cipher | Old client needs TLS 1.0? Upgrade the client |
 
 ### 4.4 Habits to avoid
+
+*📽️ Slide [20](/present/pki-tls/#20)*
 
 These all "fix" the error by switching off the check that was protecting you:
 
@@ -270,6 +302,8 @@ If a vendor's install guide tells you to do any of these, raise it before follow
 
 ### 5.1 The certificate lifecycle
 
+*📽️ Slides [22](/present/pki-tls/#22), [23](/present/pki-tls/#23)*
+
 1. **Request:** generate a key pair and CSR (ideally on the target server) with the right SAN names.
 2. **Issue:** the CA validates and signs it.
 3. **Install:** import the cert (and chain), bind it to the service, restart if needed.
@@ -287,6 +321,8 @@ If a vendor's install guide tells you to do any of these, raise it before follow
 Manual renewal stops being practical at that pace. That's why we're moving to **automated issuance (ACME)** for public certs. Internal CA certs aren't bound by these rules but should still be tracked.
 
 ### 5.2 Check your own servers
+
+*📽️ Slide [24](/present/pki-tls/#24)*
 
 **Windows, list certs expiring in the next 60 days (PowerShell, run as admin):**
 
@@ -318,6 +354,8 @@ Look for: the names (SAN), the dates, and whether the intermediate is sent (more
 
 ## Recap: five things to remember
 
+*📽️ Slide [25](/present/pki-tls/#25)*
+
 1. **Public key is public, private key is secret.** Anything containing a private key (`.key`, `.pfx`) is a password-level secret.
 2. **A certificate is an ID card for a public key**, signed by a CA. Clients trust it because they trust the CA at the top of the chain.
 3. **TLS uses certs to prove identity and agree a key,** then encrypts everything with fast symmetric crypto.
@@ -327,6 +365,8 @@ Look for: the names (SAN), the dates, and whether the intermediate is sent (more
 ---
 
 ## Next steps and contacts
+
+*📽️ Slide [26](/present/pki-tls/#26)*
 
 - Requesting a certificate: [process / ticket category]
 - Questions about TLS settings or the internal CA: [team / contact]

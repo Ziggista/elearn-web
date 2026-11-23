@@ -157,6 +157,20 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <aside class="notes">About 20 to 25 minutes. One story the whole way through: Chris wants to talk to Sally securely. The written version is the "TLS and trust" page on this site.</aside>
 </section>
 
+<!-- objectives -->
+<section class="slide">
+  <p class="eyebrow">Learning objectives</p>
+  <h2>By the end, you can explain PKI at arm’s length</h2>
+  <div class="steps light" style="margin-top:6px">
+    <div class="step"><div class="num">1</div><p><b>Why we need TLS:</b> the three things it gives, and why encryption alone isn’t enough.</p></div>
+    <div class="step"><div class="num">2</div><p><b>How trust works:</b> client trusts the CA, the CA vouches for the server, the server proves it holds the private key.</p></div>
+    <div class="step"><div class="num">3</div><p><b>What happens on connect:</b> the handshake, the four checks, and a shared secret that’s never sent.</p></div>
+    <div class="step"><div class="num">4</div><p><b>Where it lives at work:</b> who plays Sally, Chris and Charlie on IIS, AD CS, Tomcat, SQL and RDP.</p></div>
+    <div class="step"><div class="num">5</div><p><b>Why keys matter long-term:</b> save now, decrypt later, and what Heartbleed taught us.</p></div>
+  </div>
+  <aside class="notes">Set the bar: nobody needs to be a PKI engineer. If you can explain slide 2 of the recap to a colleague over coffee, the session worked. We'll come back to these at the end.</aside>
+</section>
+
 <!-- 2 cast -->
 <section class="slide">
   <p class="eyebrow">The cast</p>
@@ -327,6 +341,89 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <aside class="notes">The last row is the cliffhanger. Recording is cheap and passive. What happens if Mallory gets something later that she doesn't have today?</aside>
 </section>
 
+<!-- real life 1: who's who -->
+<section class="slide dark">
+  <p class="eyebrow">Sally in real life</p>
+  <h2>Who plays who at work</h2>
+  <table style="margin-top:6px">
+    <tr><th style="width:22%">Character</th><th style="width:40%">At work</th><th>Their “ID” lives in</th></tr>
+    <tr><td><b>🖥️ Sally</b></td><td>IIS site, SQL Server, Tomcat app, an RDP host</td><td>Windows cert store, or a Java keystore</td></tr>
+    <tr><td><b>🧑‍💻 Chris</b></td><td>Browser, SSMS / app driver, Java app, <code>mstsc</code></td><td>His trust store (Windows, Java <code>cacerts</code>)</td></tr>
+    <tr><td><b>🏛️ Charlie</b></td><td>Our internal CA: <b>AD CS</b> (<code>certsrv</code>), or a public CA</td><td>Charlie’s root, pushed to domain PCs by GPO</td></tr>
+    <tr><td><b>👮 Charlie’s staff</b></td><td>The PKI admins who approve and issue</td><td></td></tr>
+  </table>
+  <aside class="notes">Same story, real names. Every certificate job you'll do is one of: Sally applying to Charlie, Sally showing her ID, or making sure Chris knows Charlie.</aside>
+</section>
+
+<!-- real life 2: IIS applies -->
+<section class="slide">
+  <p class="eyebrow">Sally is an IIS site</p>
+  <h2>Sally applies to Charlie</h2>
+  <div class="steps light" style="margin-top:6px">
+    <div class="step"><div class="num">1</div><div class="dir">Make key + CSR</div><p>On the IIS server: <code>certlm.msc</code> custom request, or <code>certreq -new app.inf app.req</code>. Key <b>not exportable</b>. Every name in the SAN.</p></div>
+    <div class="step"><div class="num">2</div><div class="dir">Send to Charlie</div><p>Only the <code>.req</code> goes to the PKI admins. The private key stays on Sally.</p></div>
+    <div class="step"><div class="num">3</div><div class="dir">Charlie signs</div><p>AD CS issues it from a template (e.g. Web Server) and returns a <code>.cer</code>.</p></div>
+    <div class="step"><div class="num">4</div><div class="dir">Sally pairs it</div><p><code>certreq -accept app.cer</code> on <b>the same server</b>. Key icon = ID + key matched.</p></div>
+    <div class="step"><div class="num">5</div><div class="dir">Show the ID</div><p>IIS → Bindings → https → pick the cert. Test from another machine.</p></div>
+  </div>
+  <aside class="notes">This is slide 7 (Charlie the passport office) with real tools. If the key icon is missing, the cert was accepted on a different server from the one that made the request. Make a new request; don't export a key from elsewhere.</aside>
+</section>
+
+<!-- real life 3: AD CS -->
+<section class="slide">
+  <p class="eyebrow">Charlie is AD CS</p>
+  <h2>Inside Charlie’s office: <code style="font-size:58px">certsrv.msc</code></h2>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card"><h3>📂 What the console shows</h3><p><b>Issued</b>, <b>Pending</b>, <b>Failed</b> and <b>Revoked</b> certificates, and the <b>templates</b> Charlie will issue from.</p></div>
+    <div class="card"><h3>📋 Templates</h3><p>Rules for each kind of ID: purpose (server auth), key size, <b>whether the key can be exported</b>, and who may enrol.</p></div>
+    <div class="card"><h3>🚫 Revocation</h3><p>Charlie publishes a <b>CRL</b>: the list of IDs he’s cancelled. Chris checks it in step 3.</p></div>
+    <div class="card hl"><h3>👑 Charlie’s own key</h3><p>Can sign an ID for <b>any</b> name, trusted by every domain PC. That’s why only the PKI admins hold the pen.</p></div>
+  </div>
+  <aside class="notes">You won't usually log on to the CA, but it helps to know what's on the other side of your request. Some CAs also have a web enrolment page at /certsrv; requests still go through the PKI admins. Use the crib sheet for how our CA is set up.</aside>
+</section>
+
+<!-- real life 4: tomcat -->
+<section class="slide dark">
+  <p class="eyebrow">Sally is a Tomcat app</p>
+  <h2>Java keeps Sally’s ID in a wallet</h2>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card hl"><div class="emoji">👛</div><h3>Keystore = Sally’s wallet</h3><p>Her private key + certificate + Charlie’s cert. <code>conf/app.p12</code>, password in <code>server.xml</code>. <b>Secret.</b></p></div>
+    <div class="card"><div class="emoji">📇</div><h3>Truststore = Chris’s list of Charlies</h3><p>When the app is the client. <code>cacerts</code>. GPO doesn’t touch it, so <b>add our root by hand</b>.</p></div>
+  </div>
+  <div class="code" style="font-size:22px">keytool -genkeypair ... -keystore conf/app-2026.p12   <span class="k"># Sally makes key in a NEW wallet</span>
+keytool -certreq ... -file app-2026.csr                <span class="k"># application to Charlie</span>
+keytool -importcert -trustcacerts -alias corp-root ... <span class="k"># Charlie's cert first</span>
+keytool -importcert -alias tomcat -file app-2026.cer   <span class="k"># then Sally's ID, same alias</span></div>
+  <aside class="notes">Same steps as IIS, different tools. "PKIX path building failed" means Chris (the Java app) doesn't know Charlie: our root isn't in that JVM's cacerts. Vendor Java upgrades can wipe it. Full walkthrough on the Java and Tomcat page.</aside>
+</section>
+
+<!-- real life 5: SQL and RDP -->
+<section class="slide">
+  <p class="eyebrow">Sally is SQL Server, or an RDP host</p>
+  <h2>When Chris doesn’t check the ID</h2>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card"><div class="emoji">🗄️</div><h3>SQL Server</h3><p>Sally’s ID is picked in SQL Config Manager; the service account needs Read on her key. <code>TrustServerCertificate=True</code> is Chris saying “I won’t look at your ID”.</p></div>
+    <div class="card"><div class="emoji">🖥️</div><h3>RDP</h3><p>By default Sally shows a <b>self-signed</b> ID. The “identity can’t be verified” prompt is Chris being asked to trust a stranger. A cert from Charlie makes it go away.</p></div>
+  </div>
+  <p class="big" style="font-size:50px">If Chris skips the ID check, Mallory can be Sally.</p>
+  <aside class="notes">Tie back to the Mallory table: these settings skip exactly the checks that stop her. Test SQL with Encrypt=True and no TrustServerCertificate; if it connects, Sally's ID is right.</aside>
+</section>
+
+<!-- real life 6: where keys live -->
+<section class="slide dark">
+  <p class="eyebrow">Sally in real life</p>
+  <h2>Where Sally keeps her private key</h2>
+  <table style="margin-top:6px">
+    <tr><th style="width:28%">Sally is…</th><th style="width:40%">Private key lives in</th><th>Rule</th></tr>
+    <tr><td><b>IIS / RDP / LDAPS</b></td><td>Windows machine key store</td><td>Non-exportable</td></tr>
+    <tr><td><b>SQL Server</b></td><td>Windows machine key store</td><td>Service account Read only</td></tr>
+    <tr><td><b>Tomcat</b></td><td>Keystore file + password</td><td>Lock down file and <code>server.xml</code></td></tr>
+    <tr><td><b>Charlie (AD CS)</b></td><td>The CA server</td><td>PKI admins only</td></tr>
+  </table>
+  <p class="lead" style="font-size:34px">New server? <b style="color:var(--amber)">Sally applies again.</b> Never copy her key (<code>.pfx</code>) to somewhere new.</p>
+  <aside class="notes">This sets up the last section. Everything about "save now, decrypt later" depends on Sally's private key staying with Sally.</aside>
+</section>
+
 <!-- 14 save now decrypt later -->
 <section class="slide amber">
   <p class="eyebrow" style="color:var(--ink)">The long game</p>
@@ -385,9 +482,10 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
 <!-- 18 recap -->
 <section class="slide amber center">
   <p class="eyebrow" style="color:var(--ink)">Recap</p>
-  <p class="big" style="font-size:64px">Chris trusts Charlie.<br>Charlie vouches for Sally.<br>Sally proves she holds the key.<br>The secret is never sent.</p>
+  <p class="big" style="font-size:60px">Chris trusts Charlie.<br>Charlie vouches for Sally.<br>Sally proves she holds the key.<br>The secret is never sent.</p>
+  <p style="font-size:32px;margin-top:14px">At work: Sally = IIS / SQL / Tomcat / RDP · Charlie = AD CS · Chris = whatever connects.</p>
   <p class="lead" style="color:var(--ink);margin-top:20px">Notes: <b>elearn.ziggi.dev/pki-tls/tls-trust</b> · Questions?</p>
-  <aside class="notes">Read the four lines. Then questions.</aside>
+  <aside class="notes">Read the four lines. Then go back to the learning objectives: can everyone explain each one? Then questions.</aside>
 </section>
 
 </div>

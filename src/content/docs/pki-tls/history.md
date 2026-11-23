@@ -3,9 +3,13 @@ title: "A brief history: SSL to TLS 1.3"
 description: How SSL became TLS, the incidents that shaped it, and where certificates are heading next.
 ---
 
+**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+
 Why bother with history? Because nearly every rule we follow today ("turn off TLS 1.0", "no RSA key exchange", "replace the key, don't just patch") exists because of a specific incident. Knowing the story makes the rules make sense.
 
 ## The versions
+
+*📽️ Slide [19](/present/corp-apps-pki/#19)*
 
 | Year | Version | What happened |
 |---|---|---|
@@ -35,6 +39,8 @@ A pattern worth noticing: **old options left switched on "for compatibility" wer
 
 ## Heartbleed, in a bit more detail
 
+*📽️ Slide [20](/present/corp-apps-pki/#20)*
+
 In April 2014 a bug in **OpenSSL** (CVE-2014-0160) was disclosed. A malformed "heartbeat" message made a server reply with up to **64 KB of its own memory**, as often as the attacker liked, with nothing in the logs.
 
 - That memory contained passwords, session cookies and, as researchers proved within days, **the server's private TLS key**.
@@ -55,6 +61,8 @@ The protocol can be perfect and still fail if a CA misbehaves, because everyone 
 The lesson for us: **our internal CA is the DigiNotar of our network.** If it's compromised, an attacker can issue a valid certificate for any internal name and every domain-joined machine will trust it. That's why the CA's own key is the most sensitive key we have.
 
 ## Where it's heading
+
+*📽️ Slide [21](/present/corp-apps-pki/#21)*
 
 ### Shorter certificates
 
