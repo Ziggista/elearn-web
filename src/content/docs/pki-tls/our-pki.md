@@ -3,7 +3,7 @@ title: "Our PKI at RRC: getting and installing certificates"
 description: How RRC's internal CA works, how to request a SAN certificate, and how to install it on IIS, SQL Server and RDP.
 ---
 
-**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+**Slides for this page** are in the [Seb, Clint and the padlock](/present/tls-trust/) deck. Slide numbers are shown under each section.
 
 There are around **50 to 100 internal certificates** at RRC. If you run servers, you **will** be asked to request, install or renew one. This page is the how-to.
 
@@ -19,7 +19,8 @@ There are around **50 to 100 internal certificates** at RRC. If you run servers,
 
 ### Why the CA matters so much
 
-*📽️ Slide [7](/present/corp-apps-pki/#7)*
+*📽️ Slides [23](/present/tls-trust/#23), [26](/present/tls-trust/#26)*
+
 
 Whoever controls an internal CA, or can enrol for any name through it, can create a trusted certificate for **any** internal site, and every domain-joined PC will believe it. (Remember [DigiNotar](/pki-tls/history/#certificate-authority-incidents).)
 
@@ -43,11 +44,14 @@ Get our root certificate (`.cer`) from the PKI admins. It's public, so it's safe
 
 ## Requesting a SAN certificate (IIS and other Windows services)
 
-*📽️ Slide [8](/present/corp-apps-pki/#8)*
+*📽️ Slides [20](/present/tls-trust/#20), [24](/present/tls-trust/#24)*
+
 
 The private key should be **created on the server that will use it** and should **never leave it**. So you make the request on the server, and the PKI admins sign it.
 
 ### 1. Decide the names
+
+*📽️ Slide [18](/present/tls-trust/#18)*
 
 List every name people and systems use to reach the service. All of them go in the **Subject Alternative Name (SAN)**:
 
@@ -57,7 +61,8 @@ List every name people and systems use to reach the service. All of them go in t
 
 ### 2. Create the request on the server
 
-*📽️ Slide [9](/present/corp-apps-pki/#9)*
+*📽️ Slide [25](/present/tls-trust/#25)*
+
 
 **Option A: the GUI (`certlm.msc`)**
 
@@ -119,7 +124,8 @@ Or in `certlm.msc`, import the `.cer` into *Personal → Certificates*. Either w
 
 ### 5. Use it
 
-*📽️ Slides [10](/present/corp-apps-pki/#10), [11](/present/corp-apps-pki/#11)*
+*📽️ Slides [27](/present/tls-trust/#27), [28](/present/tls-trust/#28)*
+
 
 | Service | How |
 |---|---|
@@ -152,7 +158,8 @@ For Tomcat and other Java apps, follow [Java keystores and Tomcat](/pki-tls/java
 
 ## Internal or public certificate?
 
-*📽️ Slide [7](/present/corp-apps-pki/#7)*
+*📽️ Slide [23](/present/tls-trust/#23)*
+
 
 | If the service is used by… | Use |
 |---|---|

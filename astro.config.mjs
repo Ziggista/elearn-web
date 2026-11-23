@@ -11,17 +11,15 @@ export default defineConfig({
         {
           label: 'Corp Apps session',
           items: [
-            { label: 'Present: Certificates for Corp Apps', link: '/present/corp-apps-pki/', attrs: { target: '_blank' } },
+            { label: 'Present: Seb, Clint and the padlock', link: '/present/tls-trust/', attrs: { target: '_blank' } },
+            { label: 'Session notes (Seb & Clint)', slug: 'pki-tls/tls-trust' },
             { label: 'Our PKI: getting a certificate', slug: 'pki-tls/our-pki' },
           ],
         },
         {
-          label: 'PKI & TLS: start here',
+          label: 'Background reading',
           items: [
-            { label: 'Training notes', slug: 'pki-tls' },
-            { label: 'Slides (present)', link: '/present/pki-tls/', attrs: { target: '_blank' } },
-            { label: 'TLS and trust (Seb & Clint)', slug: 'pki-tls/tls-trust' },
-            { label: 'TLS and trust slides', link: '/present/tls-trust/', attrs: { target: '_blank' } },
+            { label: 'PKI & TLS overview', slug: 'pki-tls' },
           ],
         },
         {

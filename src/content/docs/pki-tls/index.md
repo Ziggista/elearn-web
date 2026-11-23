@@ -3,7 +3,7 @@ title: Locks, Keys and Certificates
 description: PKI, TLS and public-key crypto for the people who run our servers.
 ---
 
-**Slides for this page:** [Locks, keys and certificates](/present/pki-tls/). Slide numbers are shown under each section.
+**Slides:** the session deck is [Seb, Clint and the padlock](/present/tls-trust/). Where a section is covered, the slide number is shown under it.
 
 
 **PKI, TLS and public-key crypto for the people who run our servers**
@@ -14,7 +14,8 @@ Corp Apps training · about 45 minutes · no prior knowledge needed
 
 ## Why this matters to you
 
-*📽️ Slides [2](/present/pki-tls/#2), [3](/present/pki-tls/#3)*
+*📽️ Slides [3](/present/tls-trust/#3), [4](/present/tls-trust/#4)*
+
 
 You run web servers, app servers and SQL boxes. Sooner or later one of these happens:
 
@@ -38,7 +39,6 @@ Every one of these is a TLS or certificate problem. Once you understand the hand
 
 ### 1.1 Symmetric encryption: one shared key
 
-*📽️ Slide [4](/present/pki-tls/#4)*
 
 The oldest kind of encryption uses **one key** to both lock and unlock. Think of a safe with a combination: anyone who knows the combination can open it and close it.
 
@@ -49,7 +49,6 @@ That key-sharing problem is what public-key crypto solves.
 
 ### 1.2 Public and private keys: a key pair
 
-*📽️ Slides [5](/present/pki-tls/#5), [7](/present/pki-tls/#7)*
 
 Public-key (asymmetric) crypto uses **two keys that are mathematically linked**:
 
@@ -67,7 +66,6 @@ The algorithms you'll see named are **RSA** (older, keys of 2048 or 3072 bits) a
 
 ### 1.3 The two jobs a key pair does
 
-*📽️ Slide [6](/present/pki-tls/#6)*
 
 | Job | Who uses which key | What it proves |
 |---|---|---|
@@ -78,7 +76,6 @@ Signing is the job that matters most for certificates. A signature is like a wax
 
 ### 1.4 Hashes: a fingerprint of data
 
-*📽️ Slide [8](/present/pki-tls/#8)*
 
 A **hash** turns any amount of data into a short, fixed-length fingerprint (e.g. SHA-256 gives 64 hex characters).
 
@@ -104,7 +101,8 @@ A certificate is basically an **ID card for a public key**, signed by an authori
 
 ### 2.2 What's inside a certificate
 
-*📽️ Slides [9](/present/pki-tls/#9), [10](/present/pki-tls/#10)*
+*📽️ Slides [18](/present/tls-trust/#18), [19](/present/tls-trust/#19)*
+
 
 | Field | What it means | Example |
 |---|---|---|
@@ -123,7 +121,8 @@ The certificate **does not contain the private key**. The private key sits separ
 
 ### 2.3 The chain of trust
 
-*📽️ Slides [11](/present/pki-tls/#11), [12](/present/pki-tls/#12)*
+*📽️ Slide [10](/present/tls-trust/#10)*
+
 
 Certificates are signed by **Certificate Authorities (CAs)**, arranged in a chain:
 
@@ -145,7 +144,8 @@ The single most common server-side mistake is **not sending the intermediate**. 
 
 ### 2.4 Public CAs vs our internal CA
 
-*📽️ Slide [13](/present/pki-tls/#13)*
+*📽️ Slide [23](/present/tls-trust/#23)*
+
 
 | | Public CA | Internal CA |
 |---|---|---|
@@ -165,7 +165,8 @@ Rule of thumb: **if anything outside our domain-joined fleet needs to trust it, 
 
 ### 3.1 What TLS gives you
 
-*📽️ Slide [14](/present/pki-tls/#14)*
+*📽️ Slide [7](/present/tls-trust/#7)*
+
 
 **TLS (Transport Layer Security)** is the protocol that wraps a normal connection in encryption. "SSL" is its old name, and people still say "SSL certificate"; it means the same thing.
 
@@ -187,7 +188,8 @@ TLS isn't just for websites. It's underneath:
 
 ### 3.2 What happens when a client connects (the handshake)
 
-*📽️ Slide [15](/present/pki-tls/#15)*
+*📽️ Slide [12](/present/tls-trust/#12)*
+
 
 Simplified, for TLS 1.3:
 
@@ -203,7 +205,8 @@ Because each session gets a fresh key, recording traffic today and stealing the 
 
 ### 3.3 What the client checks
 
-*📽️ Slides [16](/present/pki-tls/#16), [17](/present/pki-tls/#17)*
+*📽️ Slide [14](/present/tls-trust/#14)*
+
 
 Every client runs the same four checks. Each one failing gives a recognisable error:
 
@@ -235,7 +238,8 @@ Older apps (old .NET Framework, old Java, old PHP) sometimes can't do TLS 1.2+. 
 
 ### 4.1 Where you'll meet certificates
 
-*📽️ Slide [18](/present/pki-tls/#18)*
+*📽️ Slides [22](/present/tls-trust/#22), [27](/present/tls-trust/#27)*
+
 
 | Platform | Where the cert lives | Things to know |
 |---|---|---|
@@ -250,7 +254,6 @@ Older apps (old .NET Framework, old Java, old PHP) sometimes can't do TLS 1.2+. 
 
 ### 4.2 Certificate file formats cheat sheet
 
-*📽️ Slide [19](/present/pki-tls/#19)*
 
 | Extension | What's in it | Private key? | Handle as |
 |---|---|---|---|
@@ -267,7 +270,6 @@ Generating the CSR **on the server that will use the cert** means the private ke
 
 ### 4.3 Common errors and what they usually mean
 
-*📽️ Slide [21](/present/pki-tls/#21)*
 
 | You see | Likely cause | Check |
 |---|---|---|
@@ -282,7 +284,8 @@ Generating the CSR **on the server that will use the cert** means the private ke
 
 ### 4.4 Habits to avoid
 
-*📽️ Slide [20](/present/pki-tls/#20)*
+*📽️ Slide [28](/present/tls-trust/#28)*
+
 
 These all "fix" the error by switching off the check that was protecting you:
 
@@ -302,7 +305,6 @@ If a vendor's install guide tells you to do any of these, raise it before follow
 
 ### 5.1 The certificate lifecycle
 
-*📽️ Slides [22](/present/pki-tls/#22), [23](/present/pki-tls/#23)*
 
 1. **Request:** generate a key pair and CSR (ideally on the target server) with the right SAN names.
 2. **Issue:** the CA validates and signs it.
@@ -322,7 +324,6 @@ Manual renewal stops being practical at that pace. That's why we're moving to **
 
 ### 5.2 Check your own servers
 
-*📽️ Slide [24](/present/pki-tls/#24)*
 
 **Windows, list certs expiring in the next 60 days (PowerShell, run as admin):**
 
@@ -354,7 +355,8 @@ Look for: the names (SAN), the dates, and whether the intermediate is sent (more
 
 ## Recap: five things to remember
 
-*📽️ Slide [25](/present/pki-tls/#25)*
+*📽️ Slide [41](/present/tls-trust/#41)*
+
 
 1. **Public key is public, private key is secret.** Anything containing a private key (`.key`, `.pfx`) is a password-level secret.
 2. **A certificate is an ID card for a public key**, signed by a CA. Clients trust it because they trust the CA at the top of the chain.
@@ -366,7 +368,6 @@ Look for: the names (SAN), the dates, and whether the intermediate is sent (more
 
 ## Next steps and contacts
 
-*📽️ Slide [26](/present/pki-tls/#26)*
 
 - Requesting a certificate: [process / ticket category]
 - Questions about TLS settings or the internal CA: [team / contact]

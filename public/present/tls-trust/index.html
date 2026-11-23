@@ -145,14 +145,38 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
 .pmid{text-align:center;display:flex;flex-direction:column;gap:20px}
 .pmid p{font-size:30px;color:var(--body)}
 </style>
+<style>
+.warnpage{display:flex;gap:40px;align-items:flex-start;background:#fff;border:3px solid #D9D4C7;border-radius:18px;padding:50px 60px}
+.wicon{font-size:120px;line-height:1}
+.wt{font-family:'Space Grotesk';font-weight:700;font-size:48px;color:#202124}
+.ws{font-size:28px;color:#5f6368;margin-top:8px}
+.wbtns{display:flex;gap:30px;margin-top:30px;align-items:center}
+.wb1{background:#1a73e8;color:#fff;font-weight:600;font-size:26px;padding:14px 28px;border-radius:8px}
+.wb2{color:#5f6368;font-size:24px;text-decoration:underline;border:4px solid var(--red);border-radius:10px;padding:10px 16px}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:20px}
+.tl{background:var(--dark2);border:2px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:6px}
+.tl b{font-family:'JetBrains Mono';color:var(--soft);font-size:24px}
+.tl span{font-family:'Space Grotesk';font-weight:700;font-size:38px;color:var(--light)}
+.tl i{font-style:normal;font-size:24px;color:#F28B6B}
+.tl.ok i{color:var(--soft)} .tl.best{border-color:var(--amber)} .tl.best i{color:var(--amber)}
+</style>
+<style>
+.certmock{background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:30px 36px;display:flex;flex-direction:column;gap:6px}
+.cm-h{font-family:'Space Grotesk';font-weight:700;font-size:34px;margin-bottom:8px}
+.cm-k{font-family:'JetBrains Mono';font-size:22px;color:var(--teal);font-weight:600;margin-top:10px}
+.cm-v{font-family:'JetBrains Mono';font-size:26px;line-height:1.5}
+.cm-tag{font-family:'IBM Plex Sans';font-size:20px;font-weight:600;padding:2px 10px;border-radius:6px;margin-left:8px}
+.cm-tag.old{background:#E8E4DA;color:#6b6457}
+.cm-tag.new{background:var(--amber);color:var(--ink)}
+</style>
 </head>
 <body>
 <div id="stage">
 <!-- 1 -->
 <section class="slide dark center">
-  <p class="eyebrow">Corp Apps training · TLS and trust</p>
+  <p class="eyebrow">Corp Apps training · about 40 minutes + questions</p>
   <h1>Seb, Clint and<br>the padlock</h1>
-  <p class="lead">What TLS is, why we need it, and how a client decides to trust a server.</p>
+  <p class="lead">What TLS is, why we trust it, and how certificates work on the servers we run.</p>
   <p class="muted" style="margin-top:30px;font-size:28px">Press <span class="pill">→</span> to advance · <span class="pill">N</span> for notes · <span class="pill">F</span> for fullscreen</p>
   <aside class="notes">About 20 to 25 minutes. One story the whole way through: Clint wants to talk to Seb securely. The written version is the "TLS and trust" page on this site.</aside>
 </section>
@@ -165,10 +189,36 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
     <div class="step"><div class="num">1</div><p><b>Why we need TLS:</b> the three things it gives, and why encryption alone isn’t enough.</p></div>
     <div class="step"><div class="num">2</div><p><b>How trust works:</b> client trusts the CA, the CA vouches for the server, the server proves it holds the private key.</p></div>
     <div class="step"><div class="num">3</div><p><b>What happens on connect:</b> the handshake, the four checks, and a shared secret that’s never sent.</p></div>
-    <div class="step"><div class="num">4</div><p><b>Where it lives at work:</b> who plays Seb, Clint and Cash on IIS, AD CS, Tomcat, SQL and RDP.</p></div>
-    <div class="step"><div class="num">5</div><p><b>Why keys matter long-term:</b> save now, decrypt later, and what Heartbleed taught us.</p></div>
+    <div class="step"><div class="num">4</div><p><b>What goes in a cert:</b> CN vs SAN, what an internal server cert needs, server vs client use.</p></div>
+    <div class="step"><div class="num">5</div><p><b>Where it lives at work:</b> who plays Seb, Clint and Cash on IIS, AD CS, Tomcat, SQL and RDP, and where the keys live.</p></div>
+    <div class="step"><div class="num">6</div><p><b>Why keys matter long-term:</b> save now, decrypt later, and what Heartbleed taught us.</p></div>
   </div>
   <aside class="notes">Set the bar: nobody needs to be a PKI engineer. If you can explain slide 2 of the recap to a colleague over coffee, the session worked. We'll come back to these at the end.</aside>
+</section>
+
+<!-- 2 why: the warning page -->
+<section class="slide">
+  <p class="eyebrow">Why it matters</p>
+  <h2>The most dangerous button in IT</h2>
+  <div class="warnpage">
+    <div class="wicon">⚠️</div>
+    <div><p class="wt">Your connection isn’t private</p><p class="ws">Attackers might be trying to steal your information from app.corp.local</p>
+    <div class="wbtns"><span class="wb1">Back to safety</span><span class="wb2">Advanced → Proceed to app.corp.local (unsafe)</span></div></div>
+  </div>
+  <p class="lead" style="font-size:36px">A real attack and a misconfigured server <b>look exactly the same</b>. Every time we say “just click through”, we train users to click through the real one.</p>
+  <aside class="notes">This is the "why" for the whole session. A certificate warning on one of our systems is a fault, not a feature. Our job is to make sure warnings only ever appear when something is really wrong.</aside>
+</section>
+
+<!-- 3 meme -->
+<section class="slide amber">
+  <div class="meme-wrap">
+    <div class="convo">
+      <div class="bub l"><b>🙋 User:</b> The payroll site says “not private”?</div>
+      <div class="bub r"><b>🧑‍💻 IT:</b> Yeah just click Advanced → Proceed, it’s fine</div>
+      <div class="bub l"><b>😈 Hank on the guest Wi-Fi:</b> Thanks!</div>
+    </div>
+  </div>
+  <aside class="notes">Same goes for curl -k, verify=False, TrustServerCertificate=True, and clicking Yes on the RDP "identity cannot be verified" prompt. They all skip the check that stops a middleman.</aside>
 </section>
 
 <!-- 2 cast -->
@@ -192,7 +242,7 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <div class="seqbox">
     <div class="actor"><div class="emoji">🧑‍💻</div><b>Clint</b></div>
     <div class="wire">
-      <div class="postcard">📮 user=chris<br>password=Summer2026!</div>
+      <div class="postcard">📮 user=clint<br>password=Summer2026!</div>
       <div class="lurkers"><span>👂 Eve reads it</span><span>😈 Hank changes it</span></div>
     </div>
     <div class="actor"><div class="emoji">🖥️</div><b>Seb?</b></div>
@@ -341,6 +391,77 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <aside class="notes">The last row is the cliffhanger. Recording is cheap and passive. What happens if Hank gets something later that Hank doesn't have today?</aside>
 </section>
 
+<!-- 6 middlemen -->
+<section class="slide">
+  <p class="eyebrow">What if Hank tries? · middlemen</p>
+  <h2>Middlemen: why the checks exist</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card"><div class="emoji">😈</div><h3>Hank (malicious)</h3><p>Rogue Wi-Fi, ARP spoofing, DNS poisoning, a hacked switch. They can see the traffic, but <b>can’t produce a trusted cert</b> for our server.</p></div>
+    <div class="card hl"><div class="emoji">🛂</div><h3>Ours, on purpose</h3><p>Load balancers, reverse proxies, TLS inspection. They hold a key + cert the client trusts, so they <b>move where the cert lives</b>.</p></div>
+  </div>
+  <p class="lead" style="font-size:34px">TLS makes middlemen harmless <b>only if the client checks the certificate</b>.</p>
+  <aside class="notes">If outbound HTTPS from a server fails with a chain error, check whether something in the path re-signs traffic before blaming the vendor. Java and Linux tools won't trust our internal CA unless we add it.</aside>
+</section>
+
+<!-- NEW cn-san -->
+<section class="slide">
+  <p class="eyebrow">What goes in Seb’s ID</p>
+  <h2>CN vs SAN: only one of them counts</h2>
+  <div class="grid2" style="margin-top:6px;align-items:start">
+    <div class="certmock">
+      <p class="cm-h">🪪 Seb’s certificate</p>
+      <p class="cm-k">Subject</p><p class="cm-v">CN=app.corp.local <span class="cm-tag old">legacy, ignored</span></p>
+      <p class="cm-k">Subject Alternative Name</p><p class="cm-v">DNS: app.corp.local<br>DNS: app01.corp.local<br>DNS: reports.corp.local <span class="cm-tag new">what clients check</span></p>
+      <p class="cm-k">Issuer</p><p class="cm-v">Our internal CA</p>
+    </div>
+    <div class="steps light" style="gap:18px">
+      <div class="step"><div class="num">1</div><p><b>CN</b> (Common Name) is the old “name” field. Browsers stopped using it for matching years ago.</p></div>
+      <div class="step"><div class="num">2</div><p><b>SAN</b> is the list Clint actually checks. If the name isn’t there, it fails, <b>even if the CN is right</b>.</p></div>
+      <div class="step"><div class="num">3</div><p>Put <b>every name</b> people and systems use in the SAN: FQDN, alias/CNAME, load-balancer name.</p></div>
+      <div class="step"><div class="num">4</div><p>Still set CN to the main name for humans and old tools.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Wildcards (*.corp.local) only cover one level and put the same key on every server that uses them, so prefer per-service SANs. Avoid short names (app01) and IP addresses in the SAN unless something genuinely connects that way.</aside>
+</section>
+
+<!-- NEW cn meme -->
+<section class="slide amber">
+  <div class="meme-wrap" style="flex-direction:column;gap:40px">
+    <div style="font-size:180px">🧑‍💻☕</div>
+    <div class="sign"><p class="meme">Browsers ignore the CN.<br>Only the SAN counts.</p><p style="font-family:'Space Grotesk';font-size:44px;margin-top:24px;color:#111">Change my mind.</p></div>
+  </div>
+  <aside class="notes">Someone always says "but the CN is right". It doesn't matter: name not in the SAN = name check fails.</aside>
+</section>
+
+<!-- NEW internal server cert -->
+<section class="slide dark">
+  <p class="eyebrow">What goes in Seb’s ID</p>
+  <h2>What an internal server certificate needs</h2>
+  <table style="margin-top:6px">
+    <tr><th style="width:24%">Item</th><th>What “right” looks like</th></tr>
+    <tr><td><b>🏷️ Names</b></td><td>Every DNS name in the SAN; CN = the main one</td></tr>
+    <tr><td><b>🎯 Purpose</b></td><td>EKU includes <b>Server Authentication</b></td></tr>
+    <tr><td><b>🔑 Key</b></td><td>RSA 2048+ (or ECDSA P-256), made <b>on the server</b>, <b>non-exportable</b></td></tr>
+    <tr><td><b>🏛️ Issuer</b></td><td>Our internal CA, via the right template (e.g. Web Server)</td></tr>
+    <tr><td><b>⛓️ Trust</b></td><td>Clients trust our root: GPO for Windows; <b>by hand</b> for Java, Linux, appliances</td></tr>
+    <tr><td><b>🚫 Revocation</b></td><td>Clients can reach the CRL / AIA URLs in the cert</td></tr>
+    <tr><td><b>📅 Lifecycle</b></td><td>Expiry in the CMDB, owner named, renewal reminder set</td></tr>
+  </table>
+  <aside class="notes">Use this as the checklist when you raise a cert request with the PKI admins, and when you check a cert someone else installed. If any row is wrong, Clint will eventually complain.</aside>
+</section>
+
+<!-- NEW client vs server usage -->
+<section class="slide">
+  <p class="eyebrow">What goes in Seb’s ID</p>
+  <h2>Server or client: what the ID is <i>for</i></h2>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Server Authentication</h3><p class="mono" style="font-size:22px">EKU 1.3.6.1.5.5.7.3.1</p><p>“I am Seb.” Proves a <b>server’s</b> identity: IIS, SQL Server, RDP, LDAPS, Tomcat.</p></div>
+    <div class="card"><div class="emoji">🧑‍💻</div><h3>Client Authentication</h3><p class="mono" style="font-size:22px">EKU 1.3.6.1.5.5.7.3.2</p><p>“I am Clint.” Proves a <b>client’s</b> identity: Wi-Fi/VPN machine certs, API clients in <b>mutual TLS</b>.</p></div>
+  </div>
+  <div class="callout"><span style="font-size:56px">🤝</span><p><b>Mutual TLS:</b> Seb shows ID to Clint <i>and</i> asks Clint for ID. A server cert needs <b>Server Auth</b>; a client-only cert on IIS will be rejected.</p></div>
+  <aside class="notes">Extended Key Usage (EKU) says what a certificate may be used for. Clients check it as part of accepting the cert. The AD CS Computer template includes both client and server auth, which is why machine certs sometimes "work" on a server; for services, use the proper Web Server template with the right names. Key Usage (digital signature, key encipherment) is the lower-level version of the same idea.</aside>
+</section>
+
 <!-- real life 1: who's who -->
 <section class="slide dark">
   <p class="eyebrow">Seb in real life</p>
@@ -355,6 +476,20 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
   <aside class="notes">Same story, real names. Every certificate job you'll do is one of: Seb applying to Cash, Seb showing ID, or making sure Clint knows Cash.</aside>
 </section>
 
+<!-- 7 internal vs public -->
+<section class="slide">
+  <p class="eyebrow">How we issue</p>
+  <h2>Internal or public certificate?</h2>
+  <table style="margin-top:10px">
+    <tr><th style="width:44%">If it’s used by…</th><th>Use</th></tr>
+    <tr><td>Only domain-joined PCs and servers</td><td><b>Internal</b> cert from our CA</td></tr>
+    <tr><td>The public, phones, vendors, SaaS, non-domain devices</td><td><b>Public</b> cert from a public CA</td></tr>
+    <tr><td>A <code>.local</code> name</td><td>Internal only: public CAs can’t issue these</td></tr>
+  </table>
+  <div class="callout"><span style="font-size:56px">🏛️</span><p>Our internal CA can mint a trusted cert for <b>any</b> internal name. That’s why <b>the PKI admins issue</b>, and why nobody gets broad enrolment rights.</p></div>
+  <aside class="notes">Mention who the PKI admins are and how to reach them (see crib sheet). The Web Server template lets the requester choose the names, so enrolment on it must stay tightly controlled.</aside>
+</section>
+
 <!-- real life 2: IIS applies -->
 <section class="slide">
   <p class="eyebrow">Seb is an IIS site</p>
@@ -366,7 +501,29 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
     <div class="step"><div class="num">4</div><div class="dir">Seb pairs it</div><p><code>certreq -accept app.cer</code> on <b>the same server</b>. Key icon = ID + key matched.</p></div>
     <div class="step"><div class="num">5</div><div class="dir">Show the ID</div><p>IIS → Bindings → https → pick the cert. Test from another machine.</p></div>
   </div>
-  <aside class="notes">This is slide 7 (Cash the passport office) with real tools. If the key icon is missing, the cert was accepted on a different server from the one that made the request. Make a new request; don't export a key from elsewhere.</aside>
+  <aside class="notes">This is slide 9 (Cash the passport office) with real tools. If the key icon is missing, the cert was accepted on a different server from the one that made the request. Make a new request; don't export a key from elsewhere.</aside>
+</section>
+
+<!-- 9 certreq inf -->
+<section class="slide">
+  <p class="eyebrow">How we issue · the repeatable way</p>
+  <h2>certreq with an INF file</h2>
+  <div class="code" style="font-size:22px">[NewRequest]
+Subject = "CN=app.corp.local"
+KeyLength = 2048
+<span class="k">Exportable = FALSE</span>
+MachineKeySet = TRUE
+ProviderName = "Microsoft RSA SChannel Cryptographic Provider"
+ProviderType = 12
+RequestType = PKCS10
+[EnhancedKeyUsageExtension]
+OID = 1.3.6.1.5.5.7.3.1          <span class="k">; Server Authentication</span>
+[Extensions]
+2.5.29.17 = "{text}"             <span class="k">; SAN</span>
+_continue_ = "dns=app.corp.local&amp;"
+_continue_ = "dns=app01.corp.local"</div>
+  <p class="mono" style="font-size:26px">certreq -new app.inf app.req   →   PKI admins   →   certreq -accept app.cer</p>
+  <aside class="notes">Full INF with KeySpec and KeyUsage is on the "Our PKI" page. Keep the INF with the server's docs and renewal is a two-minute job.</aside>
 </section>
 
 <!-- real life 3: AD CS -->
@@ -380,6 +537,31 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
     <div class="card hl"><h3>👑 Cash’s own key</h3><p>Can sign an ID for <b>any</b> name, trusted by every domain PC. That’s why only the PKI admins hold the pen.</p></div>
   </div>
   <aside class="notes">You won't usually log on to the CA, but it helps to know what's on the other side of your request. Some CAs also have a web enrolment page at /certsrv; requests still go through the PKI admins. Use the crib sheet for how our CA is set up.</aside>
+</section>
+
+<!-- 10 bind -->
+<section class="slide">
+  <p class="eyebrow">Installing it</p>
+  <h2>Where it goes on Windows</h2>
+  <table>
+    <tr><th style="width:18%">Service</th><th style="width:42%">Bind it</th><th>Don’t forget</th></tr>
+    <tr><td><b>IIS</b></td><td>Site → Bindings → https → pick cert</td><td>SNI if sites share an IP</td></tr>
+    <tr><td><b>SQL Server</b></td><td>Config Manager → Protocols → Certificate</td><td>Service account <b>Read</b> on the key, restart SQL</td></tr>
+    <tr><td><b>RDP</b></td><td>Set thumbprint on <code>Win32_TSGeneralSetting</code></td><td>Ends the “identity can’t be verified” habit</td></tr>
+  </table>
+  <div class="callout"><span style="font-size:56px">🧪</span><p>Test SQL with <code>Encrypt=True</code> and <b>no</b> <code>TrustServerCertificate</code>. If it connects, the cert is right.</p></div>
+  <aside class="notes">Newer SQL drivers (ODBC 18, Microsoft.Data.SqlClient 4+) encrypt and validate by default, which is why apps started failing against self-signed SQL certs. The fix is a proper cert, not TrustServerCertificate. PowerShell for RDP is on the Our PKI page.</aside>
+</section>
+
+<!-- 11 drake -->
+<section class="slide">
+  <div class="meme-wrap">
+    <div class="drake">
+      <div class="face no">🙅</div><div class="txt"><code>TrustServerCertificate=True</code></div>
+      <div class="face" style="font-size:140px">😏👉</div><div class="txt">A proper cert from our CA on the SQL Server</div>
+    </div>
+  </div>
+  <aside class="notes">TrustServerCertificate keeps encryption but throws away authentication: an encrypted chat with whoever answers.</aside>
 </section>
 
 <!-- real life 4: tomcat -->
@@ -397,16 +579,36 @@ keytool -importcert -alias tomcat -file app-2026.cer   <span class="k"># then Se
   <aside class="notes">Same steps as IIS, different tools. "PKIX path building failed" means Clint (the Java app) doesn't know Cash: our root isn't in that JVM's cacerts. Vendor Java upgrades can wipe it. Full walkthrough on the Java and Tomcat page.</aside>
 </section>
 
-<!-- real life 5: SQL and RDP -->
+<!-- 13 keytool -->
 <section class="slide">
-  <p class="eyebrow">Seb is SQL Server, or an RDP host</p>
-  <h2>When Clint doesn’t check the ID</h2>
-  <div class="grid2" style="margin-top:6px">
-    <div class="card"><div class="emoji">🗄️</div><h3>SQL Server</h3><p>Seb’s ID is picked in SQL Config Manager; the service account needs Read on Seb’s key. <code>TrustServerCertificate=True</code> is Clint saying “I won’t look at your ID”.</p></div>
-    <div class="card"><div class="emoji">🖥️</div><h3>RDP</h3><p>By default Seb shows a <b>self-signed</b> ID. The “identity can’t be verified” prompt is Clint being asked to trust a stranger. A cert from Cash makes it go away.</p></div>
+  <p class="eyebrow">Java and Tomcat · renewal</p>
+  <h2>Renewing Tomcat with keytool</h2>
+  <div class="code" style="font-size:22px"><span class="k"># 1. New key + CSR in a NEW keystore, on the server</span>
+keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 \
+  -dname "CN=app.corp.local" -ext "SAN=dns:app.corp.local,dns:app01.corp.local" \
+  -keystore conf/app-2026.p12 -storetype PKCS12
+keytool -certreq -alias tomcat -keystore conf/app-2026.p12 \
+  -ext "SAN=dns:app.corp.local,dns:app01.corp.local" -file app-2026.csr
+
+<span class="k"># 2. After the PKI admins sign it: CA first, then cert (same alias)</span>
+keytool -importcert -trustcacerts -alias corp-root -file root-ca.cer -keystore conf/app-2026.p12
+keytool -importcert -alias tomcat -file app-2026.cer -keystore conf/app-2026.p12
+
+<span class="k"># 3. Check, point server.xml at it, restart, test, delete the old one</span>
+keytool -list -v -keystore conf/app-2026.p12</div>
+  <aside class="notes">"Failed to establish chain from reply" means you imported the cert before its CA. "PKIX path building failed" at runtime means the truststore is missing our root. Full walkthrough on the Java and Tomcat page.</aside>
+</section>
+
+<!-- 14 chrome vs java -->
+<section class="slide">
+  <div class="meme-wrap" style="flex-direction:column;gap:36px">
+    <div class="grid2" style="width:1500px">
+      <div class="mpanel" style="background:#E8F5E9;height:440px"><div style="font-size:150px">😎</div><p style="font-family:'Space Grotesk';font-weight:700;font-size:44px;color:#111;text-align:center">Browser on a domain PC: “Internal cert? Trusted.”</p></div>
+      <div class="mpanel" style="background:#FDECEA;height:440px"><div style="font-size:150px">😭</div><p style="font-family:'Space Grotesk';font-weight:700;font-size:44px;color:#111;text-align:center">Tomcat after a Java upgrade: <code style="font-size:34px">PKIX path building failed</code></p></div>
+    </div>
+    <p class="big" style="font-size:56px">“It works in the browser” proves nothing.</p>
   </div>
-  <p class="big" style="font-size:50px">If Clint skips the ID check, Hank can be Seb.</p>
-  <aside class="notes">Tie back to the Hank table: these settings skip exactly the checks that stop Hank. Test SQL with Encrypt=True and no TrustServerCertificate; if it connects, Seb's ID is right.</aside>
+  <aside class="notes">Add "re-import our root into cacerts" to every Java app's upgrade checklist, or point the app at a separate truststore that upgrades don't touch.</aside>
 </section>
 
 <!-- real life 6: where keys live -->
@@ -422,6 +624,62 @@ keytool -importcert -alias tomcat -file app-2026.cer   <span class="k"># then Se
   </table>
   <p class="lead" style="font-size:34px">New server? <b style="color:var(--amber)">Seb applies again.</b> Never copy Seb’s key (<code>.pfx</code>) to somewhere new.</p>
   <aside class="notes">This sets up the last section. Everything about "save now, decrypt later" depends on Seb's private key staying with Seb.</aside>
+</section>
+
+<!-- 16 don't export -->
+<section class="slide dark">
+  <p class="eyebrow">Private keys</p>
+  <h2>Why not to export them</h2>
+  <div class="grid3" style="margin-top:6px">
+    <div class="card"><div class="emoji">📧</div><h3>Copies spread</h3><p>Shares, email, tickets, git, Downloads, backups.</p></div>
+    <div class="card"><div class="emoji">🧨</div><h3>Blast radius</h3><p>One key on five servers: one breach leaks all five.</p></div>
+    <div class="card hl"><div class="emoji">❓</div><h3>We lose track</h3><p>Can’t say where the key is, so can’t say it’s safe.</p></div>
+  </div>
+  <p class="big" style="font-size:52px;color:var(--amber)">New server? New request, new key. Never export the old one.</p>
+  <p class="lead" style="font-size:30px">If export is genuinely needed (web farm, appliance), agree it with the PKI admins, strong unique password sent separately, delete every copy.</p>
+  <aside class="notes">A .pfx is cert plus private key. If a copy may have leaked, the only fix is revoke and reissue with a new key. Changing the pfx password doesn't help.</aside>
+</section>
+
+<!-- 17 one does not simply -->
+<section class="slide dark">
+  <div class="meme-wrap">
+    <div class="mpanel" style="width:1500px;height:740px;background:linear-gradient(#3b3b3b,#151515)">
+      <p class="meme" style="font-size:96px">One does not simply</p>
+      <div style="font-size:200px">🧙‍♂️</div>
+      <p class="meme" style="font-size:96px">email the .pfx</p>
+    </div>
+  </div>
+  <aside class="notes">Ask: has anyone got a .pfx sitting on a share or in their Downloads folder right now? No judgement, just delete it after the session and tell the PKI admins if it's in use somewhere.</aside>
+</section>
+
+<!-- 18 ISM-0507 -->
+<section class="slide">
+  <p class="eyebrow">Why we have to: ISM</p>
+  <h2>ISM-0507: key management</h2>
+  <div class="card hl" style="margin-top:10px"><p style="font-size:34px;color:var(--ink)">“Cryptographic key management processes, and supporting cryptographic key management procedures, are developed, implemented and maintained.”</p><p class="muted" style="font-size:24px">Revision 5 · Updated Dec-22 · Applicable: NC, OS, P, S, TS</p></div>
+  <div class="grid4">
+    <div class="card"><h3>Where</h3><p>Know where every key is</p></div>
+    <div class="card"><h3>Who</h3><p>Know who can use it</p></div>
+    <div class="card"><h3>Lifecycle</h3><p>Create, renew, destroy</p></div>
+    <div class="card"><h3>Leak</h3><p>Revoke and reissue</p></div>
+  </div>
+  <aside class="notes">Every exported key makes "where is it" harder to answer. Non-exportable keys, one cert per service, and a CMDB record per cert are how Corp Apps helps us meet this control.</aside>
+</section>
+
+<!-- 19 history -->
+<section class="slide dark">
+  <p class="eyebrow">A brief history</p>
+  <h2>SSL to TLS 1.3 in one line</h2>
+  <div class="timeline">
+    <div class="tl"><b>1995</b><span>SSL 2.0</span><i>broken</i></div>
+    <div class="tl"><b>1996</b><span>SSL 3.0</span><i>POODLE 2014</i></div>
+    <div class="tl"><b>1999</b><span>TLS 1.0</span><i>BEAST 2011</i></div>
+    <div class="tl"><b>2006</b><span>TLS 1.1</span><i>retired 2021</i></div>
+    <div class="tl ok"><b>2008</b><span>TLS 1.2</span><i>OK with ECDHE</i></div>
+    <div class="tl best"><b>2018</b><span>TLS 1.3</span><i>preferred</i></div>
+  </div>
+  <p class="lead" style="font-size:34px">Almost every attack used <b style="color:var(--amber)">old options left on “for compatibility”</b>. That’s why we turn them off.</p>
+  <aside class="notes">"SSL certificate" is just the name that stuck; certs are the same whatever protocol version uses them. Also worth a sentence: DigiNotar (2011), a CA that was hacked and used to fake Google certificates. A compromised CA can impersonate anyone, which is why our CA is so sensitive.</aside>
 </section>
 
 <!-- 14 save now decrypt later -->
@@ -453,16 +711,17 @@ keytool -importcert -alias tomcat -file app-2026.cer   <span class="k"># then Se
   <aside class="notes">The paint colours in ECDHE are ephemeral: picked fresh, thrown away. Stealing Seb's long-term key later doesn't recover them. Heartbleed is why forward secrecy became mandatory, and why TLS 1.3 removed RSA key exchange. Other lessons: patching wasn't enough, you had to replace the key, reissue and revoke. And OpenSSL was hiding inside appliances and vendor software. Windows SChannel wasn't affected, but Apache, PHP and appliances next to it were.</aside>
 </section>
 
-<!-- 16 quantum -->
-<section class="slide dark">
-  <p class="eyebrow">Later, version 2 · The maths breaks</p>
-  <h2>Quantum: Heartbleed for everyone, at once</h2>
-  <div class="grid2" style="margin-top:10px">
-    <div class="card"><div class="emoji">⚛️</div><h3>The threat</h3><p>A large quantum computer is expected to break <b>RSA and ECDH</b>. Forward secrecy doesn’t help if the key exchange itself falls. Recordings made today are the target.</p></div>
-    <div class="card hl"><div class="emoji">🛡️</div><h3>The response</h3><p><b>ML-KEM</b> (NIST FIPS 203) is quantum-resistant. Browsers and big providers already use a <b>hybrid</b> (<code>X25519MLKEM768</code>): safe if either half holds.</p></div>
+<!-- 21 future -->
+<section class="slide">
+  <p class="eyebrow">What’s coming</p>
+  <h2>Shorter certs, more automation, new maths</h2>
+  <div class="grid3" style="margin-top:6px">
+    <div class="card"><div class="emoji">📉</div><h3>Shorter lifetimes</h3><p>Public certs: <b>200 days</b> now, <b>100</b> from Mar 2027, <b>47</b> from Mar 2029.</p></div>
+    <div class="card"><div class="emoji">🤖</div><h3>ACME / Let’s Encrypt</h3><p>Free, automated certs since 2015. Manual renewal at 47 days isn’t a plan.</p></div>
+    <div class="card hl"><div class="emoji">⚛️</div><h3>Post-quantum</h3><p>Traffic recorded today may be decryptable later. <b>ML-KEM</b> hybrids already in browsers. ASD: move off classic crypto by <b>2030</b>.</p></div>
   </div>
-  <p class="lead" style="font-size:34px">ASD guidance for Australian government: plan to stop relying on traditional asymmetric crypto <b style="color:var(--amber)">by 2030</b>.</p>
-  <aside class="notes">Nobody has the machine yet. That's the point of save now, decrypt later: they don't need it yet. Data sent today that must stay secret past ~2030 is already at risk if it's only protected by classic key exchange.</aside>
+  <p class="lead" style="font-size:32px">Internal certs aren’t bound by the public limits, but <b>if renewal is manual, it will eventually be forgotten</b>.</p>
+  <aside class="notes">Ask vendors about TLS 1.3 and post-quantum support in their roadmaps. Keep TLS libraries patched.</aside>
 </section>
 
 <!-- 17 what we do -->
@@ -484,10 +743,16 @@ keytool -importcert -alias tomcat -file app-2026.cer   <span class="k"># then Se
   <p class="eyebrow" style="color:var(--ink)">Recap</p>
   <p class="big" style="font-size:60px">Clint trusts Cash.<br>Cash vouches for Seb.<br>Seb proves it holds the key.<br>The secret is never sent.</p>
   <p style="font-size:32px;margin-top:14px">At work: Seb = IIS / SQL / Tomcat / RDP · Cash = AD CS · Clint = whatever connects.</p>
-  <p class="lead" style="color:var(--ink);margin-top:20px">Notes: <b>elearn.ziggi.dev/pki-tls/tls-trust</b> · Questions?</p>
+  
   <aside class="notes">Read the four lines. Then go back to the learning objectives: can everyone explain each one? Then questions.</aside>
 </section>
 
+<!-- 24 questions -->
+<section class="slide amber center">
+  <p class="big" style="font-size:140px">Questions?</p>
+  <p class="lead" style="color:var(--ink)">Notes: <b>elearn.ziggi.dev/pki-tls/tls-trust</b> · How-to: <b>/pki-tls/our-pki</b></p>
+  <aside class="notes">Homework: run the cert-expiry PowerShell on one server you own, and find any .pfx files lying around.</aside>
+</section>
 </div>
 <div id="bar"></div>
 <div id="notes"></div>

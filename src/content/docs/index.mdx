@@ -5,24 +5,20 @@ template: splash
 hero:
   tagline: Short, practical training sessions.
   actions:
-    - text: Start PKI & TLS
-      link: /pki-tls/
+    - text: Start the PKI session
+      link: /pki-tls/tls-trust/
       icon: right-arrow
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <CardGrid>
-  <Card title="Certificates for Corp Apps" icon="star">
-    The 35-minute session: requesting SAN certs, IIS, SQL, RDP, Tomcat, private keys, ISM-0507, history and what's next.
-    [Present the slides →](/present/corp-apps-pki/) · [How to get a cert →](/pki-tls/our-pki/)
+  <Card title="Seb, Clint and the padlock" icon="star">
+    The Corp Apps PKI session, about 40 minutes: how trust works, CN vs SAN, requesting and installing certs on IIS, SQL, RDP and Tomcat, private keys, ISM-0507, Heartbleed and what's next.
+    [Present the slides →](/present/tls-trust/) · [Read the notes →](/pki-tls/tls-trust/) · [How to get a cert →](/pki-tls/our-pki/)
   </Card>
-  <Card title="PKI & TLS" icon="seti:lock">
-    Keys, certificates and TLS for people who run servers. About 45 minutes.
-    [Read the notes →](/pki-tls/) · [Present the slides →](/present/pki-tls/)
-  </Card>
-  <Card title="TLS and trust" icon="approve-check">
-    Seb the server and Clint the client: what TLS is, why we trust it, and save now, decrypt later. About 25 minutes.
-    [Read the notes →](/pki-tls/tls-trust/) · [Present the slides →](/present/tls-trust/)
+  <Card title="Background reading" icon="open-book">
+    The PKI & TLS overview, plus deep dives on history, middlemen, private keys and Java/Tomcat.
+    [PKI & TLS overview →](/pki-tls/)
   </Card>
 </CardGrid>

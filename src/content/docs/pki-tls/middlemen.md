@@ -3,7 +3,7 @@ title: "Middlemen: and why we never click Advanced > Proceed"
 description: Who can sit between a client and a server, the legitimate middlemen we run ourselves, and why certificate warnings must always mean something.
 ---
 
-**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+**Slides for this page** are in the [Seb, Clint and the padlock](/present/tls-trust/) deck. Slide numbers are shown under each section.
 
 A **middleman** (man-in-the-middle, MITM) is anything that sits between the client and the server and can see or change the traffic. TLS exists to make middlemen harmless. Certificate checks are the part that does it.
 
@@ -11,7 +11,8 @@ If you haven't met Seb (server), Clint (client) and Hank (attacker) yet, read [T
 
 ## Malicious middlemen
 
-*📽️ Slide [6](/present/corp-apps-pki/#6)*
+*📽️ Slides [16](/present/tls-trust/#16), [17](/present/tls-trust/#17)*
+
 
 | How Hank gets in the middle | Example |
 |---|---|
@@ -27,7 +28,8 @@ In every case, Hank can see and forward the traffic. What Hank **can't** do is p
 
 ## Why "Advanced > Proceed" is so bad
 
-*📽️ Slides [2](/present/corp-apps-pki/#2), [3](/present/corp-apps-pki/#3)*
+*📽️ Slides [3](/present/tls-trust/#3), [4](/present/tls-trust/#4)*
+
 
 When a user clicks through a certificate warning, they're telling the browser: "I don't care who's on the other end."
 
@@ -59,7 +61,8 @@ Websites can send an **HSTS** header (`Strict-Transport-Security`) that tells br
 
 ## Legitimate middlemen we run ourselves
 
-*📽️ Slide [6](/present/corp-apps-pki/#6)*
+*📽️ Slide [17](/present/tls-trust/#17)*
+
 
 Some middlemen are deliberate. They work by **terminating TLS** (decrypting it) and starting a new TLS connection onward. That means they hold a private key and certificate the client trusts.
 

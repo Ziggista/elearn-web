@@ -3,13 +3,14 @@ title: "A brief history: SSL to TLS 1.3"
 description: How SSL became TLS, the incidents that shaped it, and where certificates are heading next.
 ---
 
-**Slides for this page** are in the [Certificates for Corp Apps](/present/corp-apps-pki/) deck. Slide numbers are shown under each section.
+**Slides for this page** are in the [Seb, Clint and the padlock](/present/tls-trust/) deck. Slide numbers are shown under each section.
 
 Why bother with history? Because nearly every rule we follow today ("turn off TLS 1.0", "no RSA key exchange", "replace the key, don't just patch") exists because of a specific incident. Knowing the story makes the rules make sense.
 
 ## The versions
 
-*📽️ Slide [19](/present/corp-apps-pki/#19)*
+*📽️ Slide [36](/present/tls-trust/#36)*
+
 
 | Year | Version | What happened |
 |---|---|---|
@@ -39,7 +40,8 @@ A pattern worth noticing: **old options left switched on "for compatibility" wer
 
 ## Heartbleed, in a bit more detail
 
-*📽️ Slide [20](/present/corp-apps-pki/#20)*
+*📽️ Slide [38](/present/tls-trust/#38)*
+
 
 In April 2014 a bug in **OpenSSL** (CVE-2014-0160) was disclosed. A malformed "heartbeat" message made a server reply with up to **64 KB of its own memory**, as often as the attacker liked, with nothing in the logs.
 
@@ -62,7 +64,8 @@ The lesson for us: **our internal CA is the DigiNotar of our network.** If it's 
 
 ## Where it's heading
 
-*📽️ Slide [21](/present/corp-apps-pki/#21)*
+*📽️ Slide [39](/present/tls-trust/#39)*
+
 
 ### Shorter certificates
 

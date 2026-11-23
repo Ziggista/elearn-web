@@ -4,7 +4,7 @@ description: Timing, demos and talking points for running the PKI and TLS sessio
 ---
 
 
-How to run the session from [the training page](/pki-tls/). Target is 45 minutes; trim or stretch using the notes below to land anywhere from 30 to 60.
+How to run the Corp Apps PKI session. Target is about 40 minutes plus questions; trim or stretch using the notes below.
 
 ## Before the session
 
@@ -14,19 +14,20 @@ How to run the session from [the training page](/pki-tls/). Target is 45 minutes
 
 ## Running order and timing
 
-| Time | Section | Notes |
-|---|---|---|
-| 0:00–0:04 | Why this matters | Open with a recent real outage or ticket if you have one. Ask: "Who's had a cert expire on them?" |
-| 0:04–0:14 | Part 1: crypto building blocks | The padlock analogy does most of the work. Don't go into maths. Land the line "the private key is the crown jewel". |
-| 0:14–0:24 | Part 2: certificates and PKI | **Live demo:** open a site, click the padlock, show the SAN, dates and certification path. Then do the same for an internal site and point out the different issuer. |
-| 0:24–0:33 | Part 3: TLS | Walk the handshake slowly. The key insight is "public-key crypto is only used at the start". Spend time on the four checks table; everything after builds on it. |
-| 0:33–0:43 | Part 4: our environment | Go through the errors table and ask people which ones they've seen. The "habits to avoid" list is where to be firm. |
-| 0:43–0:45 | Lifecycle, recap | Show the PowerShell expiry check live. Read the five recap points. |
-| 0:45+ | Questions / quiz | Use [the quiz](/pki-tls/quiz/) if there's time or as a follow-up. |
+The session deck is [Seb, Clint and the padlock](/present/tls-trust/) (42 slides, about 40 minutes; the memes go quickly). The [session notes](/pki-tls/tls-trust/) mirror it section by section.
 
-**To cut to 30 minutes:** skip 1.4 (hashes) and 3.4 (versions), and only cover the first three rows of the errors table.
+| Time | Slides | Section | Notes |
+|---|---|---|---|
+| 0:00–0:03 | 1–4 | Objectives and why it matters | Read the six objectives. Then the Advanced → Proceed warning: a real attack and a misconfigured server look identical. |
+| 0:03–0:13 | 5–17 | How trust works | The Seb and Clint story: postcard problem, Cash the CA, the handshake, four checks, paint mixing, Hank's tricks, middlemen. Don't rush slide 14 (four checks). |
+| 0:13–0:18 | 18–21 | What goes in Seb's ID | CN vs SAN, the internal server cert checklist, server vs client use (EKU). **Live demo:** open an internal site's cert and show the SAN and EKU. |
+| 0:18–0:30 | 22–35 | Seb in real life | Who plays who, requesting a SAN cert (certlm / certreq), AD CS, binding on IIS / SQL / RDP, Tomcat and keytool, where keys live, why not to export, ISM-0507. Use the RRC crib sheet here. |
+| 0:30–0:38 | 36–40 | History and the long game | SSL to TLS 1.3, save now / decrypt later, Heartbleed, what's coming, what we do. |
+| 0:38–0:40 | 41–42 | Recap and questions | Go back to the objectives: can everyone explain each one? |
 
-**To stretch to 60 minutes:** do the quiz live, and run `openssl s_client` against a site with a missing intermediate (or show a test one) so people see what "chain not sent" looks like in practice.
+**To cut to 30 minutes:** skip the paint slide (15), the history timeline (36) and the keytool code (30), and point people at the notes for them.
+
+**To stretch to 45+ minutes:** do the [quiz](/pki-tls/quiz/) live, or walk through a real `certreq` request on a test server.
 
 ## Talking points by section
 

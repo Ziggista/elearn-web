@@ -11,17 +11,20 @@ This page explains what TLS is, why we need it, and how trust works, using a sim
 
 *📽️ Slide [2](/present/tls-trust/#2)*
 
+
 By the end of this session you should be able to explain, at arm's length, how PKI works:
 
 1. **Why we need TLS:** the three things it gives, and why encryption alone isn't enough.
 2. **How trust works:** the client trusts the CA, the CA vouches for the server, and the server proves it holds the private key.
 3. **What happens on connect:** the handshake, the four checks, and a shared secret that's never sent.
-4. **Where it lives at work:** who plays Seb, Clint and Cash on IIS, AD CS, Tomcat, SQL Server and RDP.
-5. **Why keys matter long-term:** save now, decrypt later, and what Heartbleed taught us.
+4. **What goes in a certificate:** CN vs SAN, what an internal server cert needs, and server vs client use.
+5. **Where it lives at work:** who plays Seb, Clint and Cash on IIS, AD CS, Tomcat, SQL Server and RDP, and where the keys live.
+6. **Why keys matter long-term:** save now, decrypt later, and what Heartbleed taught us.
 
 ## Meet the cast
 
-*📽️ Slide [3](/present/tls-trust/#3)*
+*📽️ Slide [5](/present/tls-trust/#5)*
+
 
 | Who | Role | In real life |
 |---|---|---|
@@ -33,7 +36,8 @@ By the end of this session you should be able to explain, at arm's length, how P
 
 ## Why we need TLS: the postcard problem
 
-*📽️ Slides [4](/present/tls-trust/#4), [5](/present/tls-trust/#5)*
+*📽️ Slides [3](/present/tls-trust/#3), [4](/present/tls-trust/#4), [6](/present/tls-trust/#6), [7](/present/tls-trust/#7)*
+
 
 Without TLS, every message Clint sends Seb is a **postcard**. Every router, switch, Wi-Fi access point and ISP along the way can read it.
 
@@ -53,7 +57,8 @@ Encryption alone isn't enough. If Clint sets up a perfectly encrypted connection
 
 ## The trust problem
 
-*📽️ Slide [6](/present/tls-trust/#6)*
+*📽️ Slide [8](/present/tls-trust/#8)*
+
 
 Seb has a key pair: a **public key** to hand to anyone, and a **private key** that never leaves Seb's server. Anything signed with Seb's private key can be checked with Seb's public key.
 
@@ -63,7 +68,8 @@ Clint has never met Seb. Clint needs someone **already trusted** to vouch for Se
 
 ## Enter Cash, the Certificate Authority
 
-*📽️ Slide [7](/present/tls-trust/#7)*
+*📽️ Slide [9](/present/tls-trust/#9)*
+
 
 Cash is like a passport office.
 
@@ -75,7 +81,8 @@ Now Seb has an ID card for that public key, stamped by Cash.
 
 ## Why Clint trusts Cash
 
-*📽️ Slides [8](/present/tls-trust/#8), [9](/present/tls-trust/#9)*
+*📽️ Slides [10](/present/tls-trust/#10), [11](/present/tls-trust/#11)*
+
 
 Clint trusts Cash because **Cash's root certificate was already on Clint's computer before Clint ever met Seb.**
 
@@ -95,7 +102,8 @@ Break any link and Clint refuses to continue.
 
 ## The conversation: how Clint and Seb start talking securely
 
-*📽️ Slide [10](/present/tls-trust/#10)*
+*📽️ Slide [12](/present/tls-trust/#12)*
+
 
 This is the TLS handshake, simplified (TLS 1.3).
 
@@ -107,7 +115,8 @@ The name Clint asks for (SNI) lets Seb pick the right certificate if Seb hosts s
 
 ### 2. Seb shows ID and proves it's genuine
 
-*📽️ Slide [11](/present/tls-trust/#11)*
+*📽️ Slide [13](/present/tls-trust/#13)*
+
 
 > **Seb → Clint:** "Hi. Let's use TLS 1.3 with these settings. Here's my half of the key exchange. Here's my certificate, and the intermediate that links it to Cash. And here's a signature over everything we've said so far, made with my private key."
 
@@ -115,7 +124,8 @@ That last signature is crucial. Anyone can **copy** Seb's certificate (it's publ
 
 ### 3. Clint checks everything
 
-*📽️ Slide [12](/present/tls-trust/#12)*
+*📽️ Slide [14](/present/tls-trust/#14)*
+
 
 Clint runs four checks:
 
@@ -130,7 +140,8 @@ Then Clint checks Seb's signature using the public key in the certificate. If it
 
 ### 4. They agree a secret without ever sending it
 
-*📽️ Slide [13](/present/tls-trust/#13)*
+*📽️ Slide [15](/present/tls-trust/#15)*
+
 
 In steps 1 and 2, Clint and Seb each sent half of a **key exchange** (Elliptic-Curve Diffie-Hellman, ECDHE). The neat trick is that each side combines its own **secret** number with the other side's **public** half and they both arrive at the **same shared secret**, while Eve, who saw both public halves, can't work it out.
 
@@ -149,7 +160,8 @@ The private key and certificate were only needed for **step 2 and 3**: proving w
 
 ## What if Hank tries something?
 
-*📽️ Slide [14](/present/tls-trust/#14)*
+*📽️ Slides [16](/present/tls-trust/#16), [17](/present/tls-trust/#17)*
+
 
 | Hank's move | What happens |
 |---|---|
@@ -161,9 +173,60 @@ The private key and certificate were only needed for **step 2 and 3**: proving w
 
 This is why **"just click through the warning"**, `curl -k`, `verify=False` and `TrustServerCertificate=True` are so dangerous: they skip exactly the checks that stop Hank.
 
+## What goes in Seb's ID
+
+### CN vs SAN
+
+*📽️ Slides [18](/present/tls-trust/#18), [19](/present/tls-trust/#19)*
+
+A certificate has two places that look like "the name":
+
+| Field | Example | Does Clint check it? |
+|---|---|---|
+| **Subject CN** (Common Name) | `CN=app.corp.local` | **No.** It's the legacy field; browsers and modern clients stopped matching on it years ago. |
+| **Subject Alternative Name (SAN)** | `DNS:app.corp.local`, `DNS:app01.corp.local`, `DNS:reports.corp.local` | **Yes.** This is the list the name check uses. |
+
+- If the name Clint connected to isn't in the SAN, the name check fails, **even if the CN is right**.
+- Put **every name** people and systems use in the SAN: the FQDN, any alias or CNAME, the load-balancer name.
+- Still set the CN to the main name, for humans and older tools.
+- Avoid short names (`app01`) and IP addresses unless something genuinely connects that way.
+- Wildcards (`*.corp.local`) only cover one level, and every server using one shares the same key. Prefer per-service SANs.
+
+### What an internal server certificate needs
+
+*📽️ Slide [20](/present/tls-trust/#20)*
+
+Use this as the checklist when you request a cert from the PKI admins, or check one someone else installed:
+
+| Item | What "right" looks like |
+|---|---|
+| **Names** | Every DNS name in the SAN; CN = the main one |
+| **Purpose** | Extended Key Usage (EKU) includes **Server Authentication** |
+| **Key** | RSA 2048+ (or ECDSA P-256), generated **on the server**, **non-exportable** |
+| **Issuer** | Our internal CA, via the right template (e.g. *Web Server*) |
+| **Trust** | Clients trust our root: Group Policy for domain Windows; **added by hand** for Java, Linux, appliances |
+| **Revocation** | Clients can reach the CRL and AIA URLs listed in the cert |
+| **Lifecycle** | Expiry recorded in the CMDB, owner named, renewal reminder set |
+
+### Server or client: what the ID is for
+
+*📽️ Slide [21](/present/tls-trust/#21)*
+
+A certificate's **Extended Key Usage (EKU)** says what it may be used for, and clients check it.
+
+| EKU | OID | Means | Used by |
+|---|---|---|---|
+| **Server Authentication** | `1.3.6.1.5.5.7.3.1` | "I am Seb" | IIS, SQL Server, RDP, LDAPS, Tomcat |
+| **Client Authentication** | `1.3.6.1.5.5.7.3.2` | "I am Clint" | Wi-Fi/VPN machine certs, API clients using mutual TLS |
+
+- **Mutual TLS (mTLS):** Seb shows ID to Clint *and* asks Clint for ID. Both sides need a cert with the right EKU.
+- A server needs **Server Authentication**. A client-only cert bound in IIS will be rejected by browsers.
+- The AD CS *Computer* template includes both, which is why a machine cert sometimes "works" on a server. For services, use the proper *Web Server* template with the right SAN names.
+
 ## Seb in real life
 
-*📽️ Slide [15](/present/tls-trust/#15)*
+*📽️ Slides [22](/present/tls-trust/#22), [23](/present/tls-trust/#23)*
+
 
 The story maps directly onto the systems we run.
 
@@ -176,7 +239,8 @@ The story maps directly onto the systems we run.
 
 ### Seb is an IIS site
 
-*📽️ Slide [16](/present/tls-trust/#16)*
+*📽️ Slides [24](/present/tls-trust/#24), [25](/present/tls-trust/#25)*
+
 
 1. **Make a key and CSR on the IIS server**: `certlm.msc` → *Create Custom Request*, or `certreq -new app.inf app.req`. Key **not exportable**, every name in the SAN.
 2. **Send only the `.req`** to the PKI admins. The private key stays with Seb.
@@ -188,7 +252,8 @@ Step-by-step detail is on [Our PKI](/pki-tls/our-pki/).
 
 ### Cash is AD CS
 
-*📽️ Slide [17](/present/tls-trust/#17)*
+*📽️ Slide [26](/present/tls-trust/#26)*
+
 
 Inside Cash's office (`certsrv.msc`) you'd see:
 
@@ -201,7 +266,8 @@ Some CAs also offer a web enrolment page at `/certsrv`. Requests still go throug
 
 ### Seb is a Tomcat app
 
-*📽️ Slide [18](/present/tls-trust/#18)*
+*📽️ Slides [29](/present/tls-trust/#29), [30](/present/tls-trust/#30), [31](/present/tls-trust/#31)*
+
 
 Java keeps things in files:
 
@@ -212,7 +278,8 @@ The steps are the same as IIS with `keytool` instead of `certreq`: make the key 
 
 ### Seb is SQL Server or an RDP host
 
-*📽️ Slide [19](/present/tls-trust/#19)*
+*📽️ Slides [27](/present/tls-trust/#27), [28](/present/tls-trust/#28)*
+
 
 - **SQL Server**: Seb's ID is picked in SQL Server Configuration Manager, and the SQL service account needs Read on Seb's key. `TrustServerCertificate=True` is Clint saying "I won't look at your ID".
 - **RDP**: by default Seb shows a **self-signed** ID. The "identity of the remote computer cannot be verified" prompt is Clint being asked to trust a stranger. A cert from Cash makes it go away.
@@ -221,7 +288,8 @@ The steps are the same as IIS with `keytool` instead of `certreq`: make the key 
 
 ### Where Seb keeps the private key
 
-*📽️ Slide [20](/present/tls-trust/#20)*
+*📽️ Slides [32](/present/tls-trust/#32), [33](/present/tls-trust/#33), [34](/present/tls-trust/#34), [35](/present/tls-trust/#35)*
+
 
 | Seb is… | Private key lives in | Rule |
 |---|---|---|
@@ -234,7 +302,8 @@ New server? **Seb applies again.** Never copy Seb's key (`.pfx`) somewhere new. 
 
 ## Save now, decrypt later
 
-*📽️ Slide [21](/present/tls-trust/#21)*
+*📽️ Slide [37](/present/tls-trust/#37)*
+
 
 Encryption protects data **today**. But an attacker doesn't have to break it today. They can **record encrypted traffic now** and **decrypt it later**, when they get something they didn't have before. This is called *harvest now, decrypt later* or *save now, decrypt later*.
 
@@ -242,7 +311,8 @@ There are two ways "later" arrives.
 
 ### 1. The server's private key gets stolen: Heartbleed
 
-*📽️ Slide [22](/present/tls-trust/#22)*
+*📽️ Slide [38](/present/tls-trust/#38)*
+
 
 **Heartbleed** (CVE-2014-0160, April 2014) was a bug in **OpenSSL**, the TLS library used by Apache, nginx, countless appliances and embedded devices. A malformed "heartbeat" message made the server send back up to **64 KB of its own memory** per request, with no log entry. Attackers could repeat it as often as they liked.
 
@@ -264,7 +334,8 @@ Heartbleed's other lessons:
 
 ### 2. The maths gets broken: quantum computers
 
-*📽️ Slide [23](/present/tls-trust/#23)*
+*📽️ Slide [39](/present/tls-trust/#39)*
+
 
 The public-key algorithms behind today's key exchange and certificates (RSA, ECDH, ECDSA) are expected to be breakable by a large enough **quantum computer**. Nobody has one yet, but an adversary recording traffic today can wait.
 
@@ -278,7 +349,8 @@ The response is **post-quantum cryptography**:
 
 ### Why this matters to us
 
-*📽️ Slide [24](/present/tls-trust/#24)*
+*📽️ Slide [40](/present/tls-trust/#40)*
+
 
 Council data often stays sensitive for a long time: HR and payroll, ratepayer records, legal matters, CCTV, SCADA traffic. If someone could record it today and read it in 5 or 10 years, that's still a breach.
 
@@ -292,7 +364,8 @@ What we can do now:
 
 ## Summary
 
-*📽️ Slide [25](/present/tls-trust/#25)*
+*📽️ Slide [41](/present/tls-trust/#41)*
+
 
 - TLS gives **confidentiality, integrity and authentication**. Without authentication, encryption is worthless.
 - Clint trusts Seb because **Clint already trusts Cash**, Cash **vouched for Seb's public key**, and Seb **proved it holds the private key**.
