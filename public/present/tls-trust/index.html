@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sally, Chris and the Padlock · Slides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{
+  --dark:#10203A; --dark2:#1B2F4E; --line:#2E4568;
+  --light:#F5F3EE; --paper:#FCFBF8; --ink:#14213D; --body:#46536A;
+  --amber:#F2A541; --teal:#17706C; --soft:#BFCBDC; --red:#C2410C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0A1528;overflow:hidden}
+body{font-family:'IBM Plex Sans',Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;width:1920px;height:1080px;left:50%;top:50%;transform-origin:center center}
+.slide{position:absolute;inset:0;padding:110px 128px;display:none;flex-direction:column;gap:36px;background:var(--light);overflow:hidden}
+.slide.on{display:flex;animation:in .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.slide.dark{background:var(--dark);color:var(--light)}
+.slide.amber{background:var(--amber);color:var(--ink)}
+.slide.center{justify-content:center}
+.notes{display:none}
+
+h1{font-family:'Space Grotesk',Arial,sans-serif;font-size:120px;line-height:1.02;font-weight:700}
+h2{font-family:'Space Grotesk',Arial,sans-serif;font-size:68px;line-height:1.08;font-weight:700}
+h3{font-family:'Space Grotesk',Arial,sans-serif;font-size:40px;line-height:1.15;font-weight:700}
+p,li,td,th{font-size:32px;line-height:1.4}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;font-weight:600;color:var(--teal)}
+.dark .eyebrow{color:var(--amber)}
+.lead{font-size:42px;line-height:1.3;color:var(--body);max-width:1400px}
+.dark .lead{color:var(--soft)}
+.muted{color:var(--body)} .dark .muted{color:var(--soft)}
+.big{font-family:'Space Grotesk',Arial,sans-serif;font-size:96px;font-weight:700;line-height:1.05}
+code,.mono{font-family:'JetBrains Mono',monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.card{background:var(--paper);border:2px solid #D9D4C7;border-radius:18px;padding:36px;display:flex;flex-direction:column;gap:14px}
+.dark .card{background:var(--dark2);border-color:var(--line)}
+.card .emoji{font-size:64px;line-height:1}
+.card p{color:var(--body);font-size:30px}
+.dark .card p{color:var(--soft)}
+.hl{border-color:var(--teal)!important} .dark .hl{border-color:var(--amber)!important}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-weight:600;border-bottom:3px solid var(--ink);padding:14px 18px;font-size:28px}
+td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-align:top}
+.dark th{border-color:var(--light)} .dark td{border-color:var(--line)}
+.code{font-family:'JetBrains Mono',monospace;font-size:26px;line-height:1.6;background:var(--dark);color:#E6EDF5;padding:30px 36px;border-radius:14px;white-space:pre}
+.dark .code{background:#0A1528}
+.k{color:var(--amber)}
+.pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:24px;padding:6px 16px;border-radius:8px;background:var(--dark);color:var(--amber);font-weight:600}
+
+/* chain diagram */
+.chain{display:flex;align-items:center;gap:28px}
+.chain .card{flex:1}
+.arrow{font-size:64px;color:var(--teal);font-weight:700}
+.dark .arrow{color:var(--amber)}
+
+/* steps */
+.steps{display:flex;flex-direction:column;gap:22px}
+.step{display:flex;align-items:center;gap:28px}
+.num{flex:none;width:60px;height:60px;border-radius:30px;background:var(--amber);color:var(--ink);font-family:'Space Grotesk';font-weight:700;font-size:30px;display:flex;align-items:center;justify-content:center}
+.dir{flex:none;width:340px;font-family:'JetBrains Mono',monospace;font-size:26px;color:var(--amber);font-weight:600}
+.step p{color:var(--soft)}
+
+/* memes */
+.meme-wrap{flex:1;display:flex;align-items:center;justify-content:center}
+.meme{font-family:'Anton',Impact,'Arial Black',sans-serif;text-transform:uppercase;color:#fff;
+  -webkit-text-stroke:3px #000;paint-order:stroke fill;text-shadow:0 4px 0 #000;letter-spacing:1px;text-align:center}
+.meme-tag{position:absolute;right:128px;top:110px}
+.mpanel{background:#222;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px;position:relative}
+.drake{display:grid;grid-template-columns:420px 1fr;width:1500px;border:6px solid #111;border-radius:12px;overflow:hidden}
+.drake .face{font-size:180px;display:flex;align-items:center;justify-content:center;background:#F7D774;height:330px}
+.drake .face.no{background:#F2B27A}
+.drake .txt{background:#fff;display:flex;align-items:center;padding:40px 56px;font-size:48px;font-family:'Space Grotesk';font-weight:700;color:#111;height:330px}
+.drake .txt code{font-size:44px;color:var(--red)}
+.brain{display:grid;grid-template-columns:1fr 300px;width:1500px;border:6px solid #111;border-radius:12px;overflow:hidden}
+.brain > div{height:175px;display:flex;align-items:center;border-bottom:4px solid #111}
+.brain .bt{background:#fff;padding:0 40px;font-family:'Space Grotesk';font-weight:700;font-size:38px;color:#111}
+.brain .bi{justify-content:center;font-size:110px}
+.brain .b1{background:#d9d9d9}.brain .b2{background:#9ec5ff}.brain .b3{background:#5a8dff}.brain .b4{background:radial-gradient(circle,#fff6a8,#ff9d2e 60%,#7a2bff)}
+.buttons{display:flex;gap:60px}
+.btn{width:520px;padding:50px 30px;border-radius:24px;background:#E24B4B;color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:40px;text-align:center;box-shadow:0 14px 0 #8E1F1F;border:5px solid #111}
+.sweat{font-size:200px;text-align:center;line-height:1}
+.fine{width:1500px;height:560px;background:linear-gradient(#ffb347,#ff7a18);border:6px solid #111;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:60px;position:relative}
+.fine .e{font-size:200px}
+.fine .bubble{background:#fff;color:#111;font-family:'Space Grotesk';font-weight:700;font-size:64px;padding:30px 50px;border-radius:50px;border:5px solid #111}
+.sign{background:#fff;border:6px solid #111;border-radius:12px;padding:60px 80px;max-width:1500px;text-align:center}
+.sign .meme{-webkit-text-stroke:0;text-shadow:none;color:#111;font-size:88px;line-height:1.1}
+
+/* chrome */
+#bar{position:fixed;left:0;bottom:0;height:6px;background:var(--amber);transition:width .25s;z-index:5}
+#hud{position:fixed;right:18px;bottom:16px;font:600 14px 'JetBrains Mono',monospace;color:#7f8ea8;z-index:5;display:flex;gap:14px;align-items:center}
+#hud a,#hud button{color:#7f8ea8;background:none;border:1px solid #33435e;border-radius:6px;padding:4px 10px;font:inherit;cursor:pointer;text-decoration:none}
+#hud a:hover,#hud button:hover{color:#fff}
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;background:#0d1830ee;color:#e6edf5;font:18px/1.5 'IBM Plex Sans',sans-serif;padding:18px 28px 44px;display:none;z-index:4;border-top:2px solid var(--amber)}
+#notes.on{display:block}
+#help{position:fixed;left:18px;bottom:16px;font:13px 'JetBrains Mono',monospace;color:#56657f;z-index:5}
+@media print{
+  html,body{overflow:visible;height:auto;background:#fff}
+  #stage{position:static;transform:none!important;width:auto;height:auto}
+  .slide{display:flex!important;position:relative;width:1920px;height:1080px;page-break-after:always;animation:none}
+  #bar,#hud,#notes,#help{display:none!important}
+}
+</style>
+<style>
+.cast{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin-top:10px}
+.cast .card p{font-size:28px}
+.seqbox{display:grid;grid-template-columns:200px 1fr 200px;align-items:center;gap:30px}
+.actor{display:flex;flex-direction:column;align-items:center;font-size:32px}
+.actor .emoji{font-size:110px}
+.wire{position:relative;border-top:6px dashed #9aa5b8;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:0}
+.postcard{margin-top:-60px;background:#fff8e1;border:3px solid #c9b77a;border-radius:10px;padding:18px 30px;font-family:'JetBrains Mono',monospace;font-size:28px;transform:rotate(-2deg)}
+.lurkers{display:flex;gap:60px;font-size:30px;font-weight:600;color:var(--red)}
+.steps.light .step p{color:var(--body)}
+.steps.light .dir{color:var(--teal)}
+.callout{display:flex;align-items:center;gap:28px;background:var(--dark);color:var(--light);border-radius:16px;padding:28px 40px}
+.callout p{font-size:32px}
+.chain{display:flex;align-items:center;gap:28px}
+.chain .card{flex:1}
+.convo{display:flex;flex-direction:column;gap:26px;width:1400px}
+.bub{max-width:1000px;padding:28px 40px;border-radius:36px;font-size:40px;font-family:'Space Grotesk';background:#fff;border:4px solid #111}
+.bub.r{align-self:flex-end;background:#DDEBFF}
+.bub.l{align-self:flex-start}
+.seq{display:grid;grid-template-columns:200px 1fr 200px;row-gap:18px;margin-top:6px}
+.who{text-align:center;font-family:'Space Grotesk';font-weight:700;font-size:34px;display:flex;flex-direction:column;align-items:center}
+.who span{font-size:72px;line-height:1.1}
+.lane{border-left:4px solid var(--line);margin-left:98px;height:100%}
+.m{display:flex;flex-direction:column;gap:8px;justify-content:center;padding:0 10px}
+.m p{font-size:27px;color:var(--soft)}
+.m p b{color:var(--light)}
+.m .ln{height:4px;background:var(--amber);position:relative}
+.m.r .ln::after{content:'';position:absolute;right:-4px;top:-10px;border-left:22px solid var(--amber);border-top:12px solid transparent;border-bottom:12px solid transparent}
+.m.l .ln::before{content:'';position:absolute;left:-4px;top:-10px;border-right:22px solid var(--amber);border-top:12px solid transparent;border-bottom:12px solid transparent}
+.m.c p{text-align:center;background:var(--dark2);border-radius:12px;padding:12px 20px}
+.m.both .ln{height:10px;background:repeating-linear-gradient(90deg,var(--amber) 0 30px,transparent 30px 44px)}
+.paint{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;align-items:center}
+.pcol{display:grid;grid-template-columns:80px 1fr;gap:14px 20px;align-items:center}
+.pcol .ph{grid-column:1/3;font-family:'Space Grotesk';font-weight:700;font-size:36px}
+.pcol p{font-size:28px;color:var(--body)}
+.blob{width:70px;height:70px;border-radius:50%;border:3px solid #111}
+.pmid{text-align:center;display:flex;flex-direction:column;gap:20px}
+.pmid p{font-size:30px;color:var(--body)}
+</style>
+</head>
+<body>
+<div id="stage">
+<!-- 1 -->
+<section class="slide dark center">
+  <p class="eyebrow">Corp Apps training · TLS and trust</p>
+  <h1>Sally, Chris and<br>the padlock</h1>
+  <p class="lead">What TLS is, why we need it, and how a client decides to trust a server.</p>
+  <p class="muted" style="margin-top:30px;font-size:28px">Press <span class="pill">→</span> to advance · <span class="pill">N</span> for notes · <span class="pill">F</span> for fullscreen</p>
+  <aside class="notes">About 20 to 25 minutes. One story the whole way through: Chris wants to talk to Sally securely. The written version is the "TLS and trust" page on this site.</aside>
+</section>
+
+<!-- 2 cast -->
+<section class="slide">
+  <p class="eyebrow">The cast</p>
+  <h2>Meet everyone</h2>
+  <div class="cast">
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Sally</h3><p><b>The server.</b> app.rrc.qld.gov.au on IIS.</p></div>
+    <div class="card hl"><div class="emoji">🧑‍💻</div><h3>Chris</h3><p><b>The client.</b> A browser, an app, or another server.</p></div>
+    <div class="card"><div class="emoji">🏛️</div><h3>Charlie</h3><p><b>The Certificate Authority.</b> Vouches for people.</p></div>
+    <div class="card"><div class="emoji">👂</div><h3>Eve</h3><p><b>Eavesdropper.</b> Can see the traffic.</p></div>
+    <div class="card"><div class="emoji">😈</div><h3>Mallory</h3><p><b>Attacker.</b> Can change traffic and pretend.</p></div>
+  </div>
+  <aside class="notes">Sally and Chris are the good guys. Charlie is the passport office. Eve and Mallory are the reason we need TLS. Eve could be anyone on shared Wi-Fi or a compromised switch; Mallory is someone who can sit in the middle of the connection.</aside>
+</section>
+
+<!-- 3 postcard -->
+<section class="slide">
+  <p class="eyebrow">Why we need TLS</p>
+  <h2>Without TLS, every message is a postcard</h2>
+  <div class="seqbox">
+    <div class="actor"><div class="emoji">🧑‍💻</div><b>Chris</b></div>
+    <div class="wire">
+      <div class="postcard">📮 user=chris<br>password=Summer2026!</div>
+      <div class="lurkers"><span>👂 Eve reads it</span><span>😈 Mallory changes it</span></div>
+    </div>
+    <div class="actor"><div class="emoji">🖥️</div><b>Sally?</b></div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>👂 Read</h3><p>Passwords, payroll, query results in plain text.</p></div>
+    <div class="card"><h3>✏️ Change</h3><p>Swap a bank account number, inject a script.</p></div>
+    <div class="card hl"><h3>🎭 Pretend</h3><p>Answer as “Sally”. Chris can’t tell.</p></div>
+  </div>
+  <aside class="notes">Every router, switch, access point and ISP along the path can read a postcard. Ask: how many network devices sit between your desk and the SQL server? Each one is a place Eve could be.</aside>
+</section>
+
+<!-- 4 tls gives -->
+<section class="slide dark">
+  <p class="eyebrow">What TLS is</p>
+  <h2>A sealed envelope, delivered to a checked address</h2>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card"><div class="emoji">✉️</div><h3>Confidentiality</h3><p>Opaque envelope. Eve sees noise.</p></div>
+    <div class="card"><div class="emoji">🧷</div><h3>Integrity</h3><p>Tamper seal. Any change is detected.</p></div>
+    <div class="card hl"><div class="emoji">🪪</div><h3>Authentication</h3><p>The address was checked against ID.</p></div>
+  </div>
+  <p class="big" style="font-size:52px;color:var(--amber)">Encrypting a chat with Mallory protects nothing.</p>
+  <p class="lead" style="font-size:34px">Authentication is what makes the encryption worth having.</p>
+  <aside class="notes">This is the key idea of the session. People think TLS = encryption. But a perfectly encrypted connection to the wrong server is useless. The rest of the deck is about how Chris knows he's really talking to Sally.</aside>
+</section>
+
+<!-- 5 trust problem -->
+<section class="slide">
+  <p class="eyebrow">The trust problem</p>
+  <h2>“Hi, I’m Sally.” Anyone can say that.</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card hl"><div class="emoji">🖥️🔑</div><h3>Real Sally</h3><p>Has a key pair. Hands out her <b>public key</b>, keeps her <b>private key</b> on the server.</p></div>
+    <div class="card"><div class="emoji">😈🔑</div><h3>Mallory</h3><p>Generates her <b>own</b> key pair in 2 seconds and also says “I’m Sally, here’s my public key.”</p></div>
+  </div>
+  <p class="lead" style="font-size:38px">Chris has never met Sally. He needs <b>someone he already trusts</b> to vouch for her.</p>
+  <aside class="notes">Public keys are just numbers. Nothing about a public key says who it belongs to. That's the gap certificates fill.</aside>
+</section>
+
+<!-- 6 charlie -->
+<section class="slide">
+  <p class="eyebrow">Enter Charlie</p>
+  <h2>Charlie the CA is a passport office</h2>
+  <div class="steps light">
+    <div class="step"><div class="num">1</div><div class="dir">Sally applies</div><p>Sends her public key and the name she wants (a CSR). Keeps the private key.</p></div>
+    <div class="step"><div class="num">2</div><div class="dir">Charlie checks</div><p>Sally proves she controls app.rrc.qld.gov.au (DNS record or web file). Mallory can’t.</p></div>
+    <div class="step"><div class="num">3</div><div class="dir">Charlie signs</div><p>“This public key belongs to app.rrc.qld.gov.au until 17 Sep.” Signed with <b>Charlie’s</b> private key.</p></div>
+  </div>
+  <div class="callout"><span style="font-size:56px">🪪</span><p>That signed statement is Sally’s <b>certificate</b>: an ID card for her public key.</p></div>
+  <aside class="notes">Our internal CA does the same job for rrc.local names, except the "proof" is that the request comes from a domain-joined machine or an admin.</aside>
+</section>
+
+<!-- 7 why trust charlie -->
+<section class="slide dark">
+  <p class="eyebrow">Why Chris trusts Charlie</p>
+  <h2>Charlie was on Chris’s computer first</h2>
+  <div class="chain" style="margin-top:10px">
+    <div class="card"><div class="emoji">🧑‍💻</div><h3>Chris trusts</h3><p>Charlie’s root, already in his trust store</p></div>
+    <div class="arrow">→</div>
+    <div class="card"><div class="emoji">🏛️</div><h3>Charlie vouches</h3><p>Sally’s public key is app.rrc.qld.gov.au</p></div>
+    <div class="arrow">→</div>
+    <div class="card hl"><div class="emoji">🖥️</div><h3>Sally proves</h3><p>She holds the matching private key</p></div>
+  </div>
+  <p class="lead" style="font-size:34px">Windows, macOS, browsers and Java ship with a few hundred audited roots. Group Policy adds <b style="color:var(--amber)">our internal CA</b> to domain PCs. Break any link and Chris walks away.</p>
+  <aside class="notes">This is the whole of "trust" in one slide. In practice there's an intermediate between Charlie's root and Sally, and Sally has to send it. Same idea, one more link.</aside>
+</section>
+
+<!-- 8 meme -->
+<section class="slide amber">
+  <div class="meme-wrap">
+    <div class="convo">
+      <div class="bub l"><b>😈 Mallory:</b> Hi Chris, it’s me, Sally 👋</div>
+      <div class="bub r"><b>🧑‍💻 Chris:</b> Cool. ID please.</div>
+      <div class="bub l"><b>😈 Mallory:</b> Here’s my certificate. I signed it myself.</div>
+      <div class="bub r"><b>🧑‍💻 Chris:</b> Sir, this is a self-signed certificate. 🚪</div>
+    </div>
+  </div>
+  <aside class="notes">A self-signed certificate is someone vouching for themselves. That's exactly what Chris can't accept from a stranger.</aside>
+</section>
+
+<!-- 9 handshake overview -->
+<section class="slide dark">
+  <p class="eyebrow">The handshake</p>
+  <h2>How Chris and Sally start talking securely</h2>
+  <div class="seq">
+    <div class="who"><span>🧑‍💻</span>Chris</div><div></div><div class="who"><span>🖥️</span>Sally</div>
+    <div class="lane"></div><div class="m r"><p><b>1 · Hello.</b> I want app.rrc.qld.gov.au, I speak TLS 1.3. Here’s my half of the key exchange.</p><div class="ln"></div></div><div class="lane"></div>
+    <div class="lane"></div><div class="m l"><p><b>2 · Hello.</b> My half of the key exchange, my certificate + intermediate, and a <b>signature</b> with my private key.</p><div class="ln"></div></div><div class="lane"></div>
+    <div class="lane"></div><div class="m c"><p><b>3 · Chris checks</b> name, dates, chain, revocation, and Sally’s signature. ✅</p></div><div class="lane"></div>
+    <div class="lane"></div><div class="m c"><p><b>4 · Both compute</b> the same shared secret. It is never sent.</p></div><div class="lane"></div>
+    <div class="lane"></div><div class="m both"><p><b>5 · 🔒 Encrypted conversation</b> with fast symmetric keys.</p><div class="ln"></div></div><div class="lane"></div>
+  </div>
+  <aside class="notes">Five steps, one round trip in TLS 1.3. The next few slides zoom in on steps 2, 3 and 4.</aside>
+</section>
+
+<!-- 10 step 2 signature -->
+<section class="slide">
+  <p class="eyebrow">Step 2 · Sally proves it’s her</p>
+  <h2>A certificate can be copied. A signature can’t.</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card"><div class="emoji">📄</div><h3>The certificate is public</h3><p>Anyone, including Mallory, can download Sally’s certificate and send it.</p></div>
+    <div class="card hl"><div class="emoji">✍️</div><h3>The signature is the proof</h3><p>Sally signs this exact handshake with her <b>private key</b>. Only the real Sally can.</p></div>
+  </div>
+  <p class="lead" style="font-size:38px">Mallory with a copied cert gets stuck right here. That’s why <b>the private key is the crown jewel</b>. 👑</p>
+  <aside class="notes">If the private key leaks, Mallory can be Sally. Remember this for the save now, decrypt later section at the end.</aside>
+</section>
+
+<!-- 11 step 3 checks -->
+<section class="slide">
+  <p class="eyebrow">Step 3 · Chris checks</p>
+  <h2>Four checks, any fail = stop</h2>
+  <div class="grid4" style="margin-top:10px">
+    <div class="card"><div class="emoji">🏷️</div><h3>Name</h3><p>Is app.rrc.qld.gov.au in the SAN?</p></div>
+    <div class="card"><div class="emoji">📅</div><h3>Dates</h3><p>Is it valid today?</p></div>
+    <div class="card hl"><div class="emoji">⛓️</div><h3>Chain</h3><p>Does it lead to Charlie in my trust store?</p></div>
+    <div class="card"><div class="emoji">🚫</div><h3>Revocation</h3><p>Has Charlie cancelled it?</p></div>
+  </div>
+  <p class="lead" style="font-size:34px">Then Chris verifies Sally’s signature with the public key from the cert. Pass = <b>“I’m talking to the holder of Sally’s private key, and Charlie says that’s app.rrc.qld.gov.au.”</b></p>
+  <aside class="notes">Every certificate error your users see is one of these four failing. Clicking through a warning, curl -k or TrustServerCertificate=True skips them, which hands the connection to Mallory.</aside>
+</section>
+
+<!-- 12 paint -->
+<section class="slide">
+  <p class="eyebrow">Step 4 · A secret that’s never sent</p>
+  <h2>Key exchange, explained with paint</h2>
+  <div class="paint">
+    <div class="pcol"><p class="ph">🧑‍💻 Chris</p><div class="blob" style="background:#E3C33A"></div><p>Shared: yellow</p><div class="blob" style="background:#C0392B"></div><p>Secret: red</p><div class="blob" style="background:#D9742F"></div><p>Sends: yellow+red</p></div>
+    <div class="pmid"><p>👂 Eve sees<br>yellow, orange, green</p><p class="big" style="font-size:48px">Can’t un-mix paint</p></div>
+    <div class="pcol"><p class="ph">🖥️ Sally</p><div class="blob" style="background:#E3C33A"></div><p>Shared: yellow</p><div class="blob" style="background:#2C5FA8"></div><p>Secret: blue</p><div class="blob" style="background:#6E9A3A"></div><p>Sends: yellow+blue</p></div>
+  </div>
+  <div class="callout"><div class="blob" style="background:#5A3B2E;width:70px;height:70px;flex:none"></div><p>Each adds their own secret to what they received. Both get <b>yellow + red + blue</b>. Same colour, never transmitted.</p></div>
+  <aside class="notes">This is ECDHE, Elliptic-Curve Diffie-Hellman Ephemeral. "Ephemeral" means the secret colours are picked fresh for every connection and thrown away afterwards. Hold onto that word for the last section.</aside>
+</section>
+
+<!-- 13 mallory tries -->
+<section class="slide dark">
+  <p class="eyebrow">What if Mallory tries?</p>
+  <h2>Every trick hits a check</h2>
+  <table>
+    <tr><th style="width:52%">😈 Mallory’s move</th><th>What stops her</th></tr>
+    <tr><td>Answers with her own self-signed cert</td><td>⛓️ Chain check</td></tr>
+    <tr><td>Uses a real cert for a name she owns</td><td>🏷️ Name check</td></tr>
+    <tr><td>Copies Sally’s real certificate</td><td>✍️ Can’t make Sally’s signature</td></tr>
+    <tr><td>Changes traffic after the handshake</td><td>🧷 Integrity check, connection dropped</td></tr>
+    <tr><td>Records everything for later</td><td>🤔 Encrypted noise… for now</td></tr>
+  </table>
+  <aside class="notes">The last row is the cliffhanger. Recording is cheap and passive. What happens if Mallory gets something later that she doesn't have today?</aside>
+</section>
+
+<!-- 14 save now decrypt later -->
+<section class="slide amber">
+  <p class="eyebrow" style="color:var(--ink)">The long game</p>
+  <h2>Save now, decrypt later</h2>
+  <div class="grid3" style="margin-top:10px">
+    <div class="card"><div class="emoji">📼</div><h3>Today</h3><p>Record encrypted traffic. Cheap, silent, undetectable.</p></div>
+    <div class="card"><div class="emoji">⏳</div><h3>Wait</h3><p>For a stolen key, or for the maths to break.</p></div>
+    <div class="card"><div class="emoji">🔓</div><h3>Later</h3><p>Decrypt what was captured years ago.</p></div>
+  </div>
+  <p class="lead" style="font-size:36px;color:var(--ink)">Payroll, HR, legal, ratepayer and SCADA data stay sensitive for <b>years</b>. A breach in 2032 of data sent in 2026 is still a breach.</p>
+  <aside class="notes">Also called harvest now, decrypt later. Two ways "later" arrives: the server's private key leaks (Heartbleed), or the public-key maths gets broken (quantum).</aside>
+</section>
+
+<!-- 15 heartbleed -->
+<section class="slide dark">
+  <p class="eyebrow">Later, version 1 · The key leaks</p>
+  <h2>Heartbleed (2014): servers bled their private keys</h2>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card"><h3>💔 What happened</h3><p>Bug in <b>OpenSSL</b> (CVE-2014-0160). A crafted heartbeat made servers return <b>64 KB of memory</b> per request, no logs. Researchers pulled out <b>private TLS keys</b> within days.</p></div>
+    <div class="card hl"><h3>📼 Why recordings mattered</h3><p>With old <b>RSA key exchange</b>, the session secret was encrypted with Sally’s public key. Steal her private key later and <b>every recorded session</b> opens up.</p></div>
+  </div>
+  <table style="margin-top:4px">
+    <tr><th style="width:40%">Key exchange</th><th>Sally’s key stolen later</th></tr>
+    <tr><td><code>TLS_RSA_…</code> (old TLS 1.2)</td><td>❌ All recorded past traffic readable</td></tr>
+    <tr><td><code>ECDHE</code> (TLS 1.3 / modern 1.2)</td><td>✅ Past sessions safe: <b>forward secrecy</b></td></tr>
+  </table>
+  <aside class="notes">The paint colours in ECDHE are ephemeral: picked fresh, thrown away. Stealing Sally's long-term key later doesn't recover them. Heartbleed is why forward secrecy became mandatory, and why TLS 1.3 removed RSA key exchange. Other lessons: patching wasn't enough, you had to replace the key, reissue and revoke. And OpenSSL was hiding inside appliances and vendor software. Windows SChannel wasn't affected, but Apache, PHP and appliances next to it were.</aside>
+</section>
+
+<!-- 16 quantum -->
+<section class="slide dark">
+  <p class="eyebrow">Later, version 2 · The maths breaks</p>
+  <h2>Quantum: Heartbleed for everyone, at once</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card"><div class="emoji">⚛️</div><h3>The threat</h3><p>A large quantum computer is expected to break <b>RSA and ECDH</b>. Forward secrecy doesn’t help if the key exchange itself falls. Recordings made today are the target.</p></div>
+    <div class="card hl"><div class="emoji">🛡️</div><h3>The response</h3><p><b>ML-KEM</b> (NIST FIPS 203) is quantum-resistant. Browsers and big providers already use a <b>hybrid</b> (<code>X25519MLKEM768</code>): safe if either half holds.</p></div>
+  </div>
+  <p class="lead" style="font-size:34px">ASD guidance for Australian government: plan to stop relying on traditional asymmetric crypto <b style="color:var(--amber)">by 2030</b>.</p>
+  <aside class="notes">Nobody has the machine yet. That's the point of save now, decrypt later: they don't need it yet. Data sent today that must stay secret past ~2030 is already at risk if it's only protected by classic key exchange.</aside>
+</section>
+
+<!-- 17 what we do -->
+<section class="slide">
+  <p class="eyebrow">What we do about it</p>
+  <h2>Five things for our servers</h2>
+  <div class="steps light">
+    <div class="step"><div class="num">1</div><p><b>TLS 1.3 where possible.</b> On TLS 1.2 allow <b>only ECDHE</b> suites; turn off <code>TLS_RSA_…</code>.</p></div>
+    <div class="step"><div class="num">2</div><p><b>Patch TLS libraries</b>, including OpenSSL, Java and .NET bundled in appliances and vendor apps.</p></div>
+    <div class="step"><div class="num">3</div><p><b>Key might have leaked? Replace it.</b> New key, new cert, revoke the old. Never just patch.</p></div>
+    <div class="step"><div class="num">4</div><p><b>Know where every cert and key lives</b>, so the next Heartbleed is a list, not a hunt.</p></div>
+    <div class="step"><div class="num">5</div><p><b>Ask vendors about post-quantum</b> (hybrid ML-KEM) support and roadmaps.</p></div>
+  </div>
+  <aside class="notes">Number 4 is where the CMDB work comes in: certificates and the software that terminates TLS should be in the inventory.</aside>
+</section>
+
+<!-- 18 recap -->
+<section class="slide amber center">
+  <p class="eyebrow" style="color:var(--ink)">Recap</p>
+  <p class="big" style="font-size:64px">Chris trusts Charlie.<br>Charlie vouches for Sally.<br>Sally proves she holds the key.<br>The secret is never sent.</p>
+  <p class="lead" style="color:var(--ink);margin-top:20px">Notes: <b>elearn.ziggi.dev/pki-tls/tls-trust</b> · Questions?</p>
+  <aside class="notes">Read the four lines. Then questions.</aside>
+</section>
+
+</div>
+<div id="bar"></div>
+<div id="notes"></div>
+<div id="help">← → space · N notes · F fullscreen</div>
+<div id="hud"><span id="count"></span><button id="nbtn" type="button">Notes</button><a href="/pki-tls/tls-trust/">Read notes page</a></div>
+<script>
+(function(){
+  const stage=document.getElementById('stage');
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('bar'),count=document.getElementById('count'),notes=document.getElementById('notes');
+  let i=0;
+  function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='translate(-50%,-50%) scale('+s+')';}
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    count.textContent=(i+1)+' / '+slides.length;
+    const a=slides[i].querySelector('.notes');notes.textContent=a?a.textContent:'';
+    if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
+  }
+  function toggleNotes(){notes.classList.toggle('on');}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home')show(0);
+    else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='n'||e.key==='N')toggleNotes();
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});}
+  });
+  document.getElementById('nbtn').addEventListener('click',toggleNotes);
+  stage.addEventListener('click',e=>{if(e.target.closest('a,button'))return;show(e.clientX<innerWidth/3?i-1:i+1);});
+  let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(d<0?i+1:i-1);tx=null;});
+  addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(n&&n-1!==i)show(n-1);});
+  fit();show((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
