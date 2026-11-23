@@ -181,7 +181,7 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
 .answer code{font-size:32px}
 .a-label{font-family:'JetBrains Mono',monospace;font-size:24px!important;letter-spacing:3px;text-transform:uppercase;color:var(--amber);font-weight:600}
 .a-ref{font-size:24px!important;color:var(--soft)}
-@media print{.answer{opacity:1!important;transform:none!important}}
+@media print{.slide.quiz{display:none!important}}
 </style>
 </head>
 <body>
@@ -762,7 +762,7 @@ keytool -list -v -keystore conf/app-2026.p12</div>
 </section>
 
 <!-- quiz intro -->
-<section class="slide dark center">
+<section class="slide dark center quiz">
   <p class="eyebrow">Check your understanding</p>
   <p class="big" style="font-size:120px;color:var(--light)">Quick quiz 🧠</p>
   <p class="lead">Ten questions. Shout out an answer, then click to reveal.</p>
@@ -876,7 +876,7 @@ keytool -list -v -keystore conf/app-2026.p12</div>
     if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
   }
   function next(){const a=slides[i].querySelector('.answer:not(.shown)');if(a){a.classList.add('shown');return;}show(i+1);}
-  document.getElementById('pbtn').addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.answer').forEach(a=>a.classList.add('shown'));window.print();});
+  document.getElementById('pbtn').addEventListener('click',e=>{e.stopPropagation();window.print();});
   function toggleNotes(){notes.classList.toggle('on');}
   addEventListener('resize',fit);
   addEventListener('keydown',e=>{
