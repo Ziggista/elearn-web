@@ -20,7 +20,7 @@ export default defineConfig({
           items: [
             { label: 'Training notes', slug: 'pki-tls' },
             { label: 'Slides (present)', link: '/present/pki-tls/', attrs: { target: '_blank' } },
-            { label: 'TLS and trust (Sally & Chris)', slug: 'pki-tls/tls-trust' },
+            { label: 'TLS and trust (Seb & Clint)', slug: 'pki-tls/tls-trust' },
             { label: 'TLS and trust slides', link: '/present/tls-trust/', attrs: { target: '_blank' } },
           ],
         },

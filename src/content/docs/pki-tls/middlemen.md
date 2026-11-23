@@ -7,23 +7,23 @@ description: Who can sit between a client and a server, the legitimate middlemen
 
 A **middleman** (man-in-the-middle, MITM) is anything that sits between the client and the server and can see or change the traffic. TLS exists to make middlemen harmless. Certificate checks are the part that does it.
 
-If you haven't met Sally (server), Chris (client) and Mallory (attacker) yet, read [TLS and trust](/pki-tls/tls-trust/) first.
+If you haven't met Seb (server), Clint (client) and Hank (attacker) yet, read [TLS and trust](/pki-tls/tls-trust/) first.
 
 ## Malicious middlemen
 
 *📽️ Slide [6](/present/corp-apps-pki/#6)*
 
-| How Mallory gets in the middle | Example |
+| How Hank gets in the middle | Example |
 |---|---|
 | **Rogue Wi-Fi** | A hotspot named like the café's or the council's guest network |
 | **ARP spoofing** | A compromised PC on the same VLAN tells everyone "I'm the gateway" |
-| **DNS poisoning** | `app.rrc.qld.gov.au` is made to resolve to Mallory's IP |
+| **DNS poisoning** | `app.rrc.qld.gov.au` is made to resolve to Hank's IP |
 | **Compromised device** | A hacked router, switch, proxy or hypervisor host |
-| **Malicious proxy settings** | Malware sets the PC's proxy to Mallory's server |
+| **Malicious proxy settings** | Malware sets the PC's proxy to Hank's server |
 
-In every case, Mallory can see and forward the traffic. What she **can't** do is present a certificate for `app.rrc.qld.gov.au` that Chris trusts, because she doesn't have Sally's private key and no CA will issue her one. So Chris's browser shows a warning.
+In every case, Hank can see and forward the traffic. What Hank **can't** do is present a certificate for `app.rrc.qld.gov.au` that Clint trusts, because Hank doesn't have Seb's private key and no CA will issue one to Hank. So Clint's browser shows a warning.
 
-**That warning is the only thing standing between the user and Mallory.**
+**That warning is the only thing standing between the user and Hank.**
 
 ## Why "Advanced > Proceed" is so bad
 
@@ -32,11 +32,11 @@ In every case, Mallory can see and forward the traffic. What she **can't** do is
 When a user clicks through a certificate warning, they're telling the browser: "I don't care who's on the other end."
 
 - If it's a **misconfigured** internal server, nothing bad happens this time.
-- If it's **Mallory**, the user has just handed over their password, session and data.
+- If it's **Hank**, the user has just handed over their password, session and data.
 
 The browser can't tell the difference, and **neither can the user**. Both warnings look identical.
 
-So every time we leave an internal site with a self-signed, expired or wrong-name certificate and tell people "just click Advanced, it's fine", we're **training users to click through the one warning that protects them from a real attack**. When Mallory turns up, they'll click through hers too.
+So every time we leave an internal site with a self-signed, expired or wrong-name certificate and tell people "just click Advanced, it's fine", we're **training users to click through the one warning that protects them from a real attack**. When Hank turns up, they'll click through Hank's too.
 
 > **Rule:** a certificate warning on one of our systems is a **fault**, not a feature. Fix the certificate. Never tell a user to click through.
 
@@ -44,12 +44,12 @@ The same applies to admins and code:
 
 | "Fix" | What it really does |
 |---|---|
-| Clicking *Advanced > Proceed* | Accept any server, including Mallory |
+| Clicking *Advanced > Proceed* | Accept any server, including Hank |
 | `curl -k`, `wget --no-check-certificate` | Same |
 | PHP `verify_peer => false`, Python `verify=False` | Same, in code that runs unattended forever |
 | Java "trust all" `TrustManager` | Same |
 | SQL `TrustServerCertificate=True` | Encrypted connection to whoever answers |
-| Ignoring the RDP "identity of the remote computer cannot be verified" prompt | You might be typing your admin password into Mallory |
+| Ignoring the RDP "identity of the remote computer cannot be verified" prompt | You might be typing your admin password into Hank |
 
 That last one matters a lot for us. RDP uses TLS too, and by default each server uses a **self-signed** certificate, so every admin learns to click "Yes" on that prompt. Issuing proper RDP certificates from our internal CA makes the prompt disappear for real servers, so it means something again when it does appear.
 
