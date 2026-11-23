@@ -30,3 +30,5 @@ Needs `ziggi.dev` to be a zone in your Cloudflare account.
 ## Keeping it private (optional)
 
 The site is public by default. To restrict it, use Cloudflare Zero Trust → Access → Applications → add `elearn.ziggi.dev` with an email or domain allow rule (free for up to 50 users).
+
+Pushes to `main` build and deploy automatically via Cloudflare Workers Builds (Worker: `elearn-web`).
