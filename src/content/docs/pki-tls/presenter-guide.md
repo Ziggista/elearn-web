@@ -14,7 +14,7 @@ How to run the Corp Apps PKI session. Target is about 40 minutes plus questions;
 
 ## Running order and timing
 
-The session deck is [Seb, Clint and the padlock](/present/tls-trust/) (42 slides, about 40 minutes; the memes go quickly). The [session notes](/pki-tls/tls-trust/) mirror it section by section.
+The session deck is [Seb, Clint and the padlock](/present/tls-trust/) (53 slides, about 40 minutes plus a 5 minute quiz; the memes go quickly). The [session notes](/pki-tls/tls-trust/) mirror it section by section.
 
 | Time | Slides | Section | Notes |
 |---|---|---|---|
@@ -23,11 +23,13 @@ The session deck is [Seb, Clint and the padlock](/present/tls-trust/) (42 slides
 | 0:13–0:18 | 18–21 | What goes in Seb's ID | CN vs SAN, the internal server cert checklist, server vs client use (EKU). **Live demo:** open an internal site's cert and show the SAN and EKU. |
 | 0:18–0:30 | 22–35 | Seb in real life | Who plays who, requesting a SAN cert (certlm / certreq), AD CS, binding on IIS / SQL / RDP, Tomcat and keytool, where keys live, why not to export, ISM-0507. Use the local crib sheet here. |
 | 0:30–0:38 | 36–40 | History and the long game | SSL to TLS 1.3, save now / decrypt later, Heartbleed, what's coming, what we do. |
-| 0:38–0:40 | 41–42 | Recap and questions | Go back to the objectives: can everyone explain each one? |
+| 0:38–0:40 | 41 | Recap | Go back to the objectives: can everyone explain each one? |
+| 0:40–0:45 | 42–52 | Quiz (optional) | One question per slide. Let the room answer, then press → to reveal the answer; → again moves on. Each answer names the slide it was covered on. |
+| 0:45– | 53 | Questions | Open floor. |
 
-**To cut to 30 minutes:** skip the paint slide (15), the history timeline (36) and the keytool code (30), and point people at the notes for them.
+**To cut to 30 minutes:** skip the paint slide (15), the history timeline (36), the keytool code (30) and the quiz (jump from 41 to 53 by typing `#53` in the address bar), and point people at the notes for them.
 
-**To stretch to 45+ minutes:** do the [quiz](/pki-tls/quiz/) live, or walk through a real `certreq` request on a test server.
+**To stretch further:** walk through a real `certreq` request on a test server.
 
 ## Talking points by section
 

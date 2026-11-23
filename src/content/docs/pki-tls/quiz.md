@@ -6,6 +6,8 @@ description: Ten questions on PKI and TLS, with answers.
 
 Ten questions to run at the end of the session or send afterwards. Answers are at the bottom.
 
+*📽️ In the deck these are slides [42](/present/tls-trust/#42) to [52](/present/tls-trust/#52), one question per slide: click once to reveal the answer, again to move on.*
+
 1. You receive a file called `webapp.pfx`. Is it safe to attach to a ticket? Why or why not?
 2. Which key does a CA use to sign a certificate: its public key or its private key?
 3. A certificate's CN is `app.council.qld.gov.au`, but its SAN list only contains `www.council.qld.gov.au`. Will a browser accept it for `app.council.qld.gov.au`?
