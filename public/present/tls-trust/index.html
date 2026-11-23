@@ -99,7 +99,10 @@ td{padding:14px 18px;border-bottom:1px solid #D9D4C7;font-size:28px;vertical-ali
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;background:#0d1830ee;color:#e6edf5;font:18px/1.5 'IBM Plex Sans',sans-serif;padding:18px 28px 44px;display:none;z-index:4;border-top:2px solid var(--amber)}
 #notes.on{display:block}
 #help{position:fixed;left:18px;bottom:16px;font:13px 'JetBrains Mono',monospace;color:#56657f;z-index:5}
+@page{size:1920px 1080px;margin:0}
 @media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .slide aside.notes{display:none!important}
   html,body{overflow:visible;height:auto;background:#fff}
   #stage{position:static;transform:none!important;width:auto;height:auto}
   .slide{display:flex!important;position:relative;width:1920px;height:1080px;page-break-after:always;animation:none}
@@ -856,7 +859,7 @@ keytool -list -v -keystore conf/app-2026.p12</div>
 <div id="bar"></div>
 <div id="notes"></div>
 <div id="help">← → space · N notes · F fullscreen</div>
-<div id="hud"><span id="count"></span><button id="nbtn" type="button">Notes</button><a href="/pki-tls/tls-trust/">Read notes page</a></div>
+<div id="hud"><span id="count"></span><button id="nbtn" type="button">Notes</button><button id="pbtn" type="button" title="Opens the print dialog: choose Save as PDF">Save as PDF</button><a href="/pki-tls/tls-trust/">Read notes page</a></div>
 <script>
 (function(){
   const stage=document.getElementById('stage');
@@ -873,6 +876,7 @@ keytool -list -v -keystore conf/app-2026.p12</div>
     if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
   }
   function next(){const a=slides[i].querySelector('.answer:not(.shown)');if(a){a.classList.add('shown');return;}show(i+1);}
+  document.getElementById('pbtn').addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.answer').forEach(a=>a.classList.add('shown'));window.print();});
   function toggleNotes(){notes.classList.toggle('on');}
   addEventListener('resize',fit);
   addEventListener('keydown',e=>{
